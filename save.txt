@@ -1,0 +1,6 @@
+Step{fromWhere=(0,0) on the chessboard is clicked!, toWhere=(0,1) on the chessboard is clicked!, MovedChessPiece=model.ChessPiece@464168b8, CapturedChessPiece=null, turn=1}
+Step{fromWhere=(6,4) on the chessboard is clicked!, toWhere=(6,3) on the chessboard is clicked!, MovedChessPiece=model.ChessPiece@13ae2dea, CapturedChessPiece=null, turn=2}
+Step{fromWhere=(2,2) on the chessboard is clicked!, toWhere=(2,3) on the chessboard is clicked!, MovedChessPiece=model.ChessPiece@7c0803f6, CapturedChessPiece=null, turn=3}
+Step{fromWhere=(6,3) on the chessboard is clicked!, toWhere=(5,3) on the chessboard is clicked!, MovedChessPiece=model.ChessPiece@13ae2dea, CapturedChessPiece=null, turn=4}
+Step{fromWhere=(2,3) on the chessboard is clicked!, toWhere=(3,3) on the chessboard is clicked!, MovedChessPiece=model.ChessPiece@7c0803f6, CapturedChessPiece=null, turn=5}
+Step{fromWhere=(5,3) on the chessboard is clicked!, toWhere=(4,3) on the chessboard is clicked!, MovedChessPiece=model.ChessPiece@13ae2dea, CapturedChessPiece=null, turn=6}

@@ -1,0 +1,49 @@
+package model;
+
+public class Step {
+    private ChessboardPoint fromWhere;
+    private ChessboardPoint toWhere;
+    private ChessPiece MovedChessPiece;
+    private ChessPiece CapturedChessPiece;
+    private int turn;
+
+    public ChessboardPoint getFrom() {
+        return fromWhere;
+    }
+
+    public ChessboardPoint getTo() {
+        return toWhere;
+    }
+
+    public ChessPiece getMovedChessPiece() {
+        return MovedChessPiece;
+    }
+
+    public ChessPiece getCapturedChessPiece() {
+        return CapturedChessPiece;
+    }
+
+    public int getTurn() {
+        return turn;
+    }
+
+    public Step(ChessboardPoint fromWhere, ChessboardPoint toWhere, ChessPiece MovedChessPiece, ChessPiece CapturedChessPiece,
+            int turn) {
+        this.fromWhere = fromWhere;
+        this.toWhere = toWhere;
+        this.MovedChessPiece = MovedChessPiece;
+        this.CapturedChessPiece = CapturedChessPiece;
+        this.turn = turn;
+    }
+
+    @Override
+    public String toString() {
+        return "Step{" +
+                "fromWhere=" + fromWhere +
+                ", toWhere=" + toWhere +
+                ", MovedChessPiece=" + MovedChessPiece +
+                ", CapturedChessPiece=" + CapturedChessPiece +
+                ", turn=" + turn +
+                '}';
+    }
+}
