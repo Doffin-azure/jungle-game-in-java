@@ -36,7 +36,7 @@ public class Step {
     }
 
     public Step(ChessboardPoint fromWhere, ChessboardPoint toWhere, ChessPiece MovedChessPiece, ChessPiece CapturedChessPiece,
-            int turn, AnimalChessComponent acc) {
+                int turn, AnimalChessComponent acc) {
         this.fromWhere = fromWhere;
         this.toWhere = toWhere;
         this.MovedChessPiece = MovedChessPiece;

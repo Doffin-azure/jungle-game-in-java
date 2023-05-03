@@ -5,19 +5,41 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class BGM implements Runnable{
+    private String MusicPath;
+    private boolean isStop=false;
+    private Clip runningBGM;
+    public BGM(String MusicPath)
+    {
+        this.MusicPath=MusicPath;
+    }
+    public void setBGMPath(String musicPath)
+    {
+        this.MusicPath=musicPath;
+    }
+    public void stopBGM()
+    {
+        isStop=true;
+    }
+    public void startBGM()
+    {
+        isStop=false;
+    }
     public  void run()
     {
         try{
-            Clip bgm = AudioSystem.getClip();
-            InputStream is = BGM.class.getClassLoader().getResourceAsStream("qakmp-mq85b.wav");
+            runningBGM = AudioSystem.getClip();
+            InputStream is = BGM.class.getClassLoader().getResourceAsStream(this.MusicPath);
             AudioInputStream ais = AudioSystem.getAudioInputStream(is);
-            bgm.open(ais);
-            bgm.start();
-            bgm.loop(Clip.LOOP_CONTINUOUSLY);
-            while(1==1)
+            runningBGM.open(ais);
+            runningBGM.start();
+            runningBGM.loop(Clip.LOOP_CONTINUOUSLY);
+            while(isStop)
             {
+                runningBGM.stop();
+                Thread.sleep(1000);
 
             }
+
 
         } catch (LineUnavailableException e) {
             throw new RuntimeException(e);
@@ -25,7 +47,10 @@ public class BGM implements Runnable{
             throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
+
 }
 

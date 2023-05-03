@@ -14,21 +14,28 @@ public class ChessGameFrame extends JFrame {
     //    public final Dimension FRAME_SIZE ;
     private final int WIDTH;
     private final int HEIGHT;
+    private Thread t;
+    private BGM bgm;
 
+    JLabel background;
+    JButton loginButton;
+    private String[] backgroundPath={"resource/BackgroundPicture/rocket.jpg",
+            "resource/BackgroundPicture/earth.png",
+            "resource/BackgroundPicture/space.jpg"
+    };//背景图片路径
+    private String[] bgmPath={"Music/baby.wav",
+            "Music/letMeLoveYou.wav",
+            "Music/piano.wav",
+            "Music/summertimeInParis.wav"
+    };//bgm路径
+    private final int ONE_CHESS_SIZE;
+
+    private ChessboardComponent chessboardComponent;
+
+    private GameController gameController;
     public void setGameController(GameController gameController) {
         this.gameController = gameController;
     }
-
-    private GameController gameController;
-    JLabel background;
-    JButton loginButton;
-    private final int ONE_CHESS_SIZE;
-
-    //    public final JLabel earthBG;
-//    public final JLabel spaceXBG;
-//    public final JLabel BG;
-    private ChessboardComponent chessboardComponent;
-
     public ChessGameFrame(int width, int height) {
         setTitle("斗兽棋"); //设置标题
         this.WIDTH = width;
@@ -41,15 +48,45 @@ public class ChessGameFrame extends JFrame {
         setLayout(null);
 
 
+
         addChessboard();
         addAccountButton();
         addUndoButton();
         addSaveButton();
+        addModeButton();
+        addExitButton();
+        addReStartButton();
+        addLoadButton();
 
-        addSettingsList();
-        Thread t = new Thread(new BGM());
+        bgm = new BGM(bgmPath[0]);
+        t = new Thread(bgm);
         t.start();
+        addSettingsList();
+
         addBackground();
+        changBackground(backgroundPath[2]);
+    }
+
+    //settingsList
+
+    private void changBackground(String backgroundPath) {
+        background.setIcon(new ImageIcon(backgroundPath));
+    }
+    private void changBGM(String backgroundPath) {
+        background.setIcon(new ImageIcon(backgroundPath));
+    }
+
+
+    private void addAccountButton() {
+        JButton button = new JButton("Account");
+        button.setLocation(HEIGHT, HEIGHT / 10 + 440);
+        button.setSize(200, 60);
+        button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(button);
+        button.addActionListener(e -> {
+            LoginDialog loginDialog = new LoginDialog(this);
+            loginDialog.setVisible(true);
+        });
 
     }
 
@@ -88,25 +125,24 @@ public class ChessGameFrame extends JFrame {
         this.repaint();
     }
 
+
     private void addSaveButton() {
         JButton button = new JButton("Save");
         button.setLocation(HEIGHT, HEIGHT / 10 + 40);
         button.setSize(200, 60);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
+
         button.addActionListener(e -> {
             System.out.println("Click save");
-           gameController.loading();
+            gameController.Save();
         });
 
-       button.addActionListener(e -> {
-           System.out.println("Click save");
-           gameController.Save();
-         });}
+    }
 
     private void addUndoButton() {
         JButton button = new JButton("Undo");
-        button.addActionListener((e) -> JOptionPane.showMessageDialog(this, "菜就一个字"));
+        button.addActionListener((e) -> JOptionPane.showMessageDialog(this, "就知道你会后悔的"));
         button.setLocation(HEIGHT, HEIGHT / 10 + 120);
         button.setSize(200, 60);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
@@ -116,24 +152,17 @@ public class ChessGameFrame extends JFrame {
             gameController.undo();
         });
     }
-
-
-
-
-
-    //settingsList
     private void addSettingsList() {
         JButton button = new JButton("Settings");
-        button.setLocation(HEIGHT, HEIGHT / 10 + 260);
+        button.setLocation(HEIGHT, HEIGHT / 10 + 200);
         button.setSize(200, 60);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
         button.addActionListener(e -> {
-            gameController.loading();
             String[] options = {"Language", "BGM", "Background"};
             String[] languageOptions = {"Language-Chinese", "Language-English", "Language-Japanese"};
-            String[] bgmOptions = {"BGM-Baby", "BGM-Let me love you", "BGM-summer Paris"};
-            String[] backgroundOptions = {"Background-lovely duck", "Background-earth", "Background-spaceX"};
+            String[] bgmOptions = {"Baby", "Let me love you", "summer Paris", "piano"};
+            String[] backgroundOptions = {"Background-rocket", "Background-earth", "Background-space"};
             JPanel panel = new JPanel();
             JComboBox<String> optionList = new JComboBox<>(options);
             optionList.addActionListener(evt -> {
@@ -144,9 +173,58 @@ public class ChessGameFrame extends JFrame {
                         break;
                     case "BGM":
                         selectedList = new JComboBox<>(bgmOptions);
+                        selectedList.addActionListener(Bgmmmmme -> {
+                            switch ((String) selectedList.getSelectedItem()) {
+                                case "Baby":
+                                    bgm.stopBGM();
+                                    bgm.setBGMPath(bgmPath[0]);
+                                    bgm.startBGM();
+                                    break;
+                                case "Let me love you":
+                                    bgm.stopBGM();
+                                    bgm.setBGMPath(bgmPath[0]);
+                                    bgm.startBGM();
+                                case "summer Paris":
+                                    bgm.stopBGM();
+                                    bgm.setBGMPath(bgmPath[2]);
+                                    bgm.startBGM();
+                                    break;
+                                case "piano":
+                                    bgm.stopBGM();
+                                    bgm.setBGMPath(bgmPath[3]);
+                                    bgm.startBGM();
+                                    break;
+                                default:
+                            }
+                        });
+                        panel.removeAll();
+                        panel.add(selectedList);
+                        panel.revalidate();
+                        panel.repaint();
+
+
                         break;
                     case "Background":
                         selectedList = new JComboBox<>(backgroundOptions);
+                        selectedList.addActionListener(Backgrounde -> {
+                            switch ((String) selectedList.getSelectedItem()) {
+                                case "Background-rocket":
+                                    changBackground(backgroundPath[0]);
+                                    break;
+                                case "Background-earth":
+                                    changBackground(backgroundPath[1]);
+                                    break;
+                                case "Background-space":
+                                    changBackground(backgroundPath[2]);
+                                    break;
+                                default:
+                            }
+                        });
+                        panel.removeAll();
+                        panel.add(selectedList);
+                        panel.revalidate();
+                        panel.repaint();
+
                         break;
                     default:
                         return;
@@ -159,25 +237,55 @@ public class ChessGameFrame extends JFrame {
             panel.add(optionList);
             JOptionPane.showMessageDialog(null, panel, "Settings", JOptionPane.PLAIN_MESSAGE);
         });
-
     }
 
-    private void addAccountButton() {
-        JButton button = new JButton("Account");
-        button.setLocation(HEIGHT, HEIGHT / 10 + 440);
+
+
+    private void addModeButton() {
+        JButton button = new JButton("Mode");
+        button.setLocation(HEIGHT, HEIGHT / 10 + 280);
         button.setSize(200, 60);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
         button.addActionListener(e -> {
-            gameController.restart();
-            LoginDialog loginDialog = new LoginDialog(this);
-            loginDialog.setVisible(true);
+            ModeDialog modeDialog = new ModeDialog(this);
+            modeDialog.setVisible(true);
         });
-
     }
-}
+    private void addExitButton() {
+        JButton button = new JButton("Exit");
+        button.setLocation(HEIGHT, HEIGHT / 10 + 360);
+        button.setSize(200, 60);
+        button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(button);
+        button.addActionListener((e) -> JOptionPane.showMessageDialog(this, "我是傻逼傻逼吗"));
 
+        ;
+    }
 
+    private void addReStartButton() {
+        JButton button = new JButton("ReStart");
+        button.setLocation(HEIGHT, HEIGHT / 10 - 80);
+        button.setSize(200, 60);
+        button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(button);
+        button.addActionListener(e -> {
+            System.out.println("Click start");
+            gameController.restart();
+        });
+    }
+
+    public void addLoadButton() {
+        JButton button = new JButton("Load");
+        button.setLocation(HEIGHT, HEIGHT / 10 );
+        button.setSize(200, 60);
+        button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(button);
+        button.addActionListener(e -> {
+            System.out.println("Click load");
+            gameController.loading();
+        });
+}}
 
 
 
@@ -264,7 +372,16 @@ public class ChessGameFrame extends JFrame {
 
 
 
-
+//        button.addActionListener(e -> {
+//            System.out.println("Click save");
+//            String path = JOptionPane.showInputDialog("存档名");
+//            while (path.equals("")){
+//                JOptionPane.showMessageDialog(null, "存档名不能为空");
+//                path = JOptionPane.showInputDialog("存档名");
+//            }
+//            view.controller.saveGame(path);
+//            new LoadFrame();
+//        });
 
 
 

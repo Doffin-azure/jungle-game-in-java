@@ -5,6 +5,7 @@ import model.*;
 import view.CellComponent;
 import view.AnimalChessComponent;
 import view.ChessboardComponent;
+import view.VictoryDialog;
 
 import java.io.*;
 import java.util.regex.Pattern;
@@ -18,6 +19,7 @@ import java.util.regex.Pattern;
  *
  */
 public class GameController implements GameListener {
+
     private int count = 1;
 
     public int getCount() {
@@ -68,6 +70,7 @@ public class GameController implements GameListener {
         return false;
     }
 
+    // click an empty cell
     public void loading(){
         try (BufferedReader br = new BufferedReader(new FileReader("save.txt"))) {
             String line;
@@ -96,7 +99,6 @@ public class GameController implements GameListener {
         view.repaint();
     }
 
-
     public static void Save() {
 
         File file = new File("save.txt");
@@ -113,7 +115,6 @@ public class GameController implements GameListener {
             e.printStackTrace();
         }
     }
-
 
     public void doStep(Step step) {
         ChessboardPoint src = step.getFrom();
@@ -148,11 +149,11 @@ public class GameController implements GameListener {
             Step step = SharedData.stepList.get(count - 2);
             ChessboardPoint src = step.getFrom();
             ChessboardPoint dest = step.getTo();
-            if (step.getCapturedChessPiece()==null) {
+            if (step.getCapturedChessPiece() == null) {
                 model.moveChessPiece(dest, src);
                 view.setChessComponentAtGrid(src, view.removeChessComponentAtGrid(dest));
                 view.repaint();
-            } else if (step.getCapturedChessPiece()!=null) {
+            } else if (step.getCapturedChessPiece() != null) {
                 model.moveChessPiece(dest, src);
                 view.setChessComponentAtGrid(src, view.removeChessComponentAtGrid(dest));
                 view.repaint();
@@ -165,11 +166,10 @@ public class GameController implements GameListener {
             count--;
             swapColor();
             view.repaint();
-            SharedData.stepList.remove(count-1);
+            SharedData.stepList.remove(count - 1);
 
         }
     }
-
 
     public void restart(){
         model.restart();
@@ -181,7 +181,6 @@ public class GameController implements GameListener {
         SharedData.stepList.clear();
     }
 
-    // click an empty cell
     @Override
     public void onPlayerClickCell(ChessboardPoint point, CellComponent component) {
         if (selectedPoint != null && model.isValidMove(selectedPoint, point) || model.isNull(point)) {
@@ -189,9 +188,8 @@ public class GameController implements GameListener {
                     ((this.currentPlayer.equals(PlayerColor.BLUE) && point.getRow() < 3)
                             || (this.currentPlayer.equals(PlayerColor.RED) && point.getRow() > 6))) {
             } else {
-
-                model.recordStep(selectedPoint, point, count, null);
-                count++;
+                model.recordStep(selectedPoint,point,count,null);
+               count++;
                 model.moveChessPiece(selectedPoint, point);
                 view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
                 selectedPoint = null;
@@ -205,7 +203,8 @@ public class GameController implements GameListener {
                 }
                 if (point.getName().equals("Den")) {
                     win();
-                }
+                    VictoryDialog.displayWinning();
+                }// finish the game if the chess enter the Den
             } // finish the game
         }
     }
@@ -223,11 +222,10 @@ public class GameController implements GameListener {
             selectedPoint = null;
             component.setSelected(false);
             component.repaint();
-        } else if (!model.isNull(point) && model.isValidCapture(selectedPoint, point)) {
+        } else if (!model.isNull(point)) {
             AnimalChessComponent chessComponent = (AnimalChessComponent) view.getGridComponentAt(point).getComponents()[0];
             model.recordStep(selectedPoint, point, count, chessComponent);
             count++;
-
             model.captureChessPiece(selectedPoint, point);
 
             view.removeChessComponentAtGrid(point);
@@ -240,6 +238,6 @@ public class GameController implements GameListener {
                     || (this.currentPlayer.equals(PlayerColor.RED) && point.getRow() > 6))) {
                 this.model.getChessPieceAt(point).setRank(0);
             }
-        } // the color wait to be changed in gui.
+        }
     }
 }
