@@ -1,6 +1,8 @@
 package model;
 
 import java.util.HashMap;
+
+import view.AnimalChessComponent;
 import view.ChessboardComponent;
 import model.SharedData;
 
@@ -29,22 +31,23 @@ public class Chessboard {
 
     private void initPieces() {
         // Here is to initialize the chess's position, which waits to fix.
-        grid[0][0].setPiece(new ChessPiece(PlayerColor.BLUE, "Lion", 7));
-        grid[8][6].setPiece(new ChessPiece(PlayerColor.RED, "Lion", 7));
-        grid[0][6].setPiece(new ChessPiece(PlayerColor.BLUE, "Tiger", 6));
-        grid[8][0].setPiece(new ChessPiece(PlayerColor.RED, "Tiger", 6));
-        grid[1][1].setPiece(new ChessPiece(PlayerColor.BLUE, "Dog", 3));
-        grid[7][5].setPiece(new ChessPiece(PlayerColor.RED, "Dog", 3));
-        grid[1][5].setPiece(new ChessPiece(PlayerColor.BLUE, "Cat", 2));
-        grid[7][1].setPiece(new ChessPiece(PlayerColor.RED, "Cat", 2));
-        grid[2][0].setPiece(new ChessPiece(PlayerColor.BLUE, "Rat", 1));
-        grid[6][6].setPiece(new ChessPiece(PlayerColor.RED, "Rat", 1));
-        grid[2][2].setPiece(new ChessPiece(PlayerColor.BLUE, "Leopard", 5));
-        grid[6][4].setPiece(new ChessPiece(PlayerColor.RED, "Leopard", 5));
-        grid[2][4].setPiece(new ChessPiece(PlayerColor.BLUE, "Wolf", 4));
-        grid[6][2].setPiece(new ChessPiece(PlayerColor.RED, "Wolf", 4));
-        grid[2][6].setPiece(new ChessPiece(PlayerColor.BLUE, "Elephant", 8));
-        grid[6][0].setPiece(new ChessPiece(PlayerColor.RED, "Elephant", 8));
+        grid[0][0].setPiece(new ChessPiece(PlayerColor.BLUE, "Lion", 7,"/Animal Supporter Asset Pack/King Lion/lion.gif"));
+        grid[8][6].setPiece(new ChessPiece(PlayerColor.RED, "Lion", 7,"/Animal Supporter Asset Pack/King Lion/lion.gif"));
+        grid[0][6].setPiece(new ChessPiece(PlayerColor.BLUE, "Tiger", 6,"/Animal Supporter Asset Pack/Walking Tiger/tiger.gif"));
+        grid[8][0].setPiece(new ChessPiece(PlayerColor.RED, "Tiger", 6,"/Animal Supporter Asset Pack/Walking Tiger/tiger.gif"));
+        grid[1][1].setPiece(new ChessPiece(PlayerColor.BLUE, "Dog", 3,"/Animal Supporter Asset Pack/Faithful Dog/FaithfulDogIdleSide.gif"));
+        grid[7][5].setPiece(new ChessPiece(PlayerColor.RED, "Dog", 3,"/Animal Supporter Asset Pack/Faithful Dog/FaithfulDogIdleSide.gif"));
+        grid[1][5].setPiece(new ChessPiece(PlayerColor.BLUE, "Cat", 2,"/Animal Supporter Asset Pack/Meowing Cat/MeowingCatIdleSide.gif"));
+        grid[7][1].setPiece(new ChessPiece(PlayerColor.RED, "Cat", 2,"/Animal Supporter Asset Pack/Meowing Cat/MeowingCatIdleSide.gif"));
+        grid[2][0].setPiece(new ChessPiece(PlayerColor.BLUE, "Rat", 1,"/Animal Supporter Asset Pack/Stinky Skunk/StinkySkunkIdleSide.gif"));
+        grid[6][6].setPiece(new ChessPiece(PlayerColor.RED, "Rat", 1,"/Animal Supporter Asset Pack/Stinky Skunk/StinkySkunkIdleSide.gif"));
+        grid[2][2].setPiece(new ChessPiece(PlayerColor.BLUE, "Leopard", 5,"/Animal Supporter Asset Pack/Running Leopard/leopard.gif"));
+        grid[6][4].setPiece(new ChessPiece(PlayerColor.RED, "Leopard", 5,"/Animal Supporter Asset Pack/Running Leopard/leopard.gif"));
+        grid[2][4].setPiece(new ChessPiece(PlayerColor.BLUE, "Wolf", 4,"/Animal Supporter Asset Pack/Timber Wolf/TimberWolfIdleSide.gif"));
+        grid[6][2].setPiece(new ChessPiece(PlayerColor.RED, "Wolf", 4,"/Animal Supporter Asset Pack/Timber Wolf/TimberWolfIdleSide.gif"));
+        grid[2][6].setPiece(new ChessPiece(PlayerColor.BLUE, "Elephant", 8,"/Animal Supporter Asset Pack/Stomping Elephant/StompingElephantIdleSide.gif"));
+        grid[6][0].setPiece(new ChessPiece(PlayerColor.RED, "Elephant", 8,"/Animal Supporter Asset Pack/Stomping Elephant/StompingElephantIdleSide.gif"));
+
     }
 
     public ChessPiece getChessPieceAt(ChessboardPoint point) {
@@ -65,7 +68,7 @@ public class Chessboard {
         return chessPiece;
     }
 
-    private void setChessPiece(ChessboardPoint point, ChessPiece chessPiece) {
+    public void setChessPiece(ChessboardPoint point, ChessPiece chessPiece) {
         getGridAt(point).setPiece(chessPiece);
     }
 
@@ -182,20 +185,10 @@ public class Chessboard {
 
     }
 
-    public void doStep(Step step) {
-        ChessboardPoint src = step.getFrom();
-        ChessboardPoint dest = step.getTo();
-        if (isValidMove(src, dest)) {
-            moveChessPiece(src, dest);
-        } else if (isValidCapture(src, dest)) {
-            captureChessPiece(src, dest);
-        } else {
-            throw new IllegalArgumentException("Illegal chess move!");
-        }
-    }
 
-    public void recordStep(ChessboardPoint src, ChessboardPoint dest, int turn) {
-        Step step = new Step(src, dest, getChessPieceAt(src), getChessPieceAt(dest), turn);
+    public void recordStep(ChessboardPoint src, ChessboardPoint dest, int turn, AnimalChessComponent animalChessComponent){
+        ChessPiece test=getChessPieceAt(dest);
+        Step step = new Step(src, dest, getChessPieceAt(src), getChessPieceAt(dest), turn, animalChessComponent);
         SharedData.stepList.add(step);
     }
 

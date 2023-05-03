@@ -1,10 +1,18 @@
 package model;
 
+import view.AnimalChessComponent;
+
 public class Step {
     private ChessboardPoint fromWhere;
     private ChessboardPoint toWhere;
     private ChessPiece MovedChessPiece;
     private ChessPiece CapturedChessPiece;
+
+    public AnimalChessComponent getAcc() {
+        return acc;
+    }
+
+    private AnimalChessComponent acc;
     private int turn;
 
     public ChessboardPoint getFrom() {
@@ -28,12 +36,13 @@ public class Step {
     }
 
     public Step(ChessboardPoint fromWhere, ChessboardPoint toWhere, ChessPiece MovedChessPiece, ChessPiece CapturedChessPiece,
-            int turn) {
+            int turn, AnimalChessComponent acc) {
         this.fromWhere = fromWhere;
         this.toWhere = toWhere;
         this.MovedChessPiece = MovedChessPiece;
         this.CapturedChessPiece = CapturedChessPiece;
         this.turn = turn;
+        this.acc = acc;
     }
 
     @Override

@@ -4,6 +4,7 @@ package model;
 public class ChessPiece {
     // the owner of the chess
     private PlayerColor owner;
+    private String address;
 
     // Elephant? Cat? Dog? ...
     private String name;
@@ -22,17 +23,15 @@ public class ChessPiece {
         return originRank;
     }
 
-    public ChessPiece(PlayerColor owner, String name, int rank) {
+    public ChessPiece(PlayerColor owner, String name, int rank,String address) {
         this.owner = owner;
         this.name = name;
         this.rank = rank;
+        this.address=address;
         this.originRank=rank;
     }
 
     public boolean canCapture(ChessPiece target) {
-        if(target==null){
-            return true;
-        }
         // TODO: Finish this method!
         if(this.rank>=target.rank&&(this.rank!=8||target.rank!=1)){
             return true;
@@ -50,4 +49,18 @@ public class ChessPiece {
     public PlayerColor getOwner() {
         return owner;
     }
+
+    public String getAddress(){
+        return address;
+    }
+
+    @Override
+    public String toString() {
+        return "ChessPiece{" +
+                "owner=" + owner +
+                ", name='" + name + '\'' +
+                ", rank=" + rank +
+                '}';
+    }
 }
+
