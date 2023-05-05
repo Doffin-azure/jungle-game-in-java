@@ -1,8 +1,8 @@
 package model;
-import view.*;
+
 import java.util.HashMap;
 import view.ChessboardComponent;
-import model.SharedData;
+import model.sharedData;
 /**
  * This class store the real chess information.
  * The Chessboard has 9*7 cells, and each cell has a position for chess
@@ -28,22 +28,22 @@ public class Chessboard {
 
     private void initPieces() {
         // Here is to initialize the chess's position, which waits to fix.
-        grid[0][0].setPiece(new ChessPiece(PlayerColor.BLUE, "Lion", 7,"/Animal Supporter Asset Pack/King Lion/lion.gif"));
-        grid[8][6].setPiece(new ChessPiece(PlayerColor.RED, "Lion", 7,"/Animal Supporter Asset Pack/King Lion/lion.gif"));
+        grid[0][0].setPiece(new ChessPiece(PlayerColor.BLUE, "Lion", 7,"/Animal Supporter Asset Pack/King Lion/R.gif"));
+        grid[8][6].setPiece(new ChessPiece(PlayerColor.RED, "Lion", 7,"/Animal Supporter Asset Pack/King Lion/R.gif"));
         grid[0][6].setPiece(new ChessPiece(PlayerColor.BLUE, "Tiger", 6,"/Animal Supporter Asset Pack/Walking Tiger/tiger.gif"));
         grid[8][0].setPiece(new ChessPiece(PlayerColor.RED, "Tiger", 6,"/Animal Supporter Asset Pack/Walking Tiger/tiger.gif"));
-        grid[1][1].setPiece(new ChessPiece(PlayerColor.BLUE, "Dog", 3,"/Animal Supporter Asset Pack/Faithful Dog/FaithfulDogIdleSide.gif"));
-        grid[7][5].setPiece(new ChessPiece(PlayerColor.RED, "Dog", 3,"/Animal Supporter Asset Pack/Faithful Dog/FaithfulDogIdleSide.gif"));
-        grid[1][5].setPiece(new ChessPiece(PlayerColor.BLUE, "Cat", 2,"/Animal Supporter Asset Pack/Meowing Cat/MeowingCatIdleSide.gif"));
-        grid[7][1].setPiece(new ChessPiece(PlayerColor.RED, "Cat", 2,"/Animal Supporter Asset Pack/Meowing Cat/MeowingCatIdleSide.gif"));
-        grid[2][0].setPiece(new ChessPiece(PlayerColor.BLUE, "Rat", 1,"/Animal Supporter Asset Pack/Stinky Skunk/StinkySkunkIdleSide.gif"));
-        grid[6][6].setPiece(new ChessPiece(PlayerColor.RED, "Rat", 1,"/Animal Supporter Asset Pack/Stinky Skunk/StinkySkunkIdleSide.gif"));
+        grid[1][1].setPiece(new ChessPiece(PlayerColor.BLUE, "Dog", 3,"/Animal Supporter Asset Pack/Faithful Dog/R.gif"));
+        grid[7][5].setPiece(new ChessPiece(PlayerColor.RED, "Dog", 3,"/Animal Supporter Asset Pack/Faithful Dog/R.gif"));
+        grid[1][5].setPiece(new ChessPiece(PlayerColor.BLUE, "Cat", 2,"/Animal Supporter Asset Pack/Meowing Cat/R.gif"));
+        grid[7][1].setPiece(new ChessPiece(PlayerColor.RED, "Cat", 2,"/Animal Supporter Asset Pack/Meowing Cat/R.gif"));
+        grid[2][0].setPiece(new ChessPiece(PlayerColor.BLUE, "Rat", 1,"/Animal Supporter Asset Pack/Stinky Skunk/R.gif"));
+        grid[6][6].setPiece(new ChessPiece(PlayerColor.RED, "Rat", 1,"/Animal Supporter Asset Pack/Stinky Skunk/R.gif"));
         grid[2][2].setPiece(new ChessPiece(PlayerColor.BLUE, "Leopard", 5,"/Animal Supporter Asset Pack/Running Leopard/leopard.gif"));
         grid[6][4].setPiece(new ChessPiece(PlayerColor.RED, "Leopard", 5,"/Animal Supporter Asset Pack/Running Leopard/leopard.gif"));
-        grid[2][4].setPiece(new ChessPiece(PlayerColor.BLUE, "Wolf", 4,"/Animal Supporter Asset Pack/Timber Wolf/TimberWolfIdleSide.gif"));
-        grid[6][2].setPiece(new ChessPiece(PlayerColor.RED, "Wolf", 4,"/Animal Supporter Asset Pack/Timber Wolf/TimberWolfIdleSide.gif"));
-        grid[2][6].setPiece(new ChessPiece(PlayerColor.BLUE, "Elephant", 8,"/Animal Supporter Asset Pack/Stomping Elephant/StompingElephantIdleSide.gif"));
-        grid[6][0].setPiece(new ChessPiece(PlayerColor.RED, "Elephant", 8,"/Animal Supporter Asset Pack/Stomping Elephant/StompingElephantIdleSide.gif"));
+        grid[2][4].setPiece(new ChessPiece(PlayerColor.BLUE, "Wolf", 4,"/Animal Supporter Asset Pack/Timber Wolf/R.gif"));
+        grid[6][2].setPiece(new ChessPiece(PlayerColor.RED, "Wolf", 4,"/Animal Supporter Asset Pack/Timber Wolf/R.gif"));
+        grid[2][6].setPiece(new ChessPiece(PlayerColor.BLUE, "Elephant", 8,"/Animal Supporter Asset Pack/Stomping Elephant/R.gif"));
+        grid[6][0].setPiece(new ChessPiece(PlayerColor.RED, "Elephant", 8,"/Animal Supporter Asset Pack/Stomping Elephant/R.gif"));
     }
 
     public ChessPiece getChessPieceAt(ChessboardPoint point) {
@@ -64,7 +64,7 @@ public class Chessboard {
         return chessPiece;
     }
 
-    public void setChessPiece(ChessboardPoint point, ChessPiece chessPiece) {
+    private void setChessPiece(ChessboardPoint point, ChessPiece chessPiece) {
         getGridAt(point).setPiece(chessPiece);
     }
 
@@ -105,7 +105,7 @@ public class Chessboard {
         }
         if (calculateDistance(src, dest) != 1) {
             if (getChessPieceAt(src).getName().equals("Lion") || getChessPieceAt(src).getName().equals("Tiger")) {
-                if(dest.getName().equals("River")){
+                if(dest.getName().equals("river")){
                     return false;
                 }
                 if (src.getCol() == dest.getCol()) {
@@ -120,8 +120,7 @@ public class Chessboard {
                         if (getChessPieceAt(new ChessboardPoint(row, col)) != null) {
                             return false;
                         }
-                        if(!SharedData.chessboardPointMap.get(row*10+col).getName().equals("" +
-                                "River")){
+                        if(!sharedData.chessboardPointMap.get(row*10+col).getName().equals("river")){
                             return false;
                         }
                         if (row > dest.getRow()) {
@@ -144,7 +143,7 @@ public class Chessboard {
                         if (getChessPieceAt(new ChessboardPoint(row, col)) != null) {
                             return false;
                         }
-                        if (!SharedData.chessboardPointMap.get(row * 10 + col).getName().equals("River")) {
+                        if (!sharedData.chessboardPointMap.get(row * 10 + col).getName().equals("River")) {
                             return false;
                         }
                         if (col > dest.getCol()) {
@@ -173,41 +172,9 @@ public class Chessboard {
             return false;
         } // if the move is not valid, return false
         if (getChessPieceAt(src).canCapture(getChessPieceAt(dest))) {
-            if (src.getName().equals("River") && getChessPieceAt(src).getName().equals("Rat")) {
-                return false;
-            }
             return true;
         }
         return false;
 
     }
-    public void recordStep(ChessboardPoint src, ChessboardPoint dest, int turn, AnimalChessComponent animalChessComponent){
-        ChessPiece test=getChessPieceAt(dest);
-        Step step = new Step(src, dest, getChessPieceAt(src), getChessPieceAt(dest), turn, animalChessComponent);
-        SharedData.stepList.add(step);
-    }
-
-    public  void findPossibleStep(ChessboardPoint selectedPoint){
-        SharedData.possibleMoveList.clear();
-        SharedData.possibleCaptureList.clear();
-        for(int i=0;i<9;i++){
-            for(int j=0;j<7;j++){
-                if(isValidMove(selectedPoint,SharedData.chessboardPointMap.get(i*10+j))){
-                    SharedData.possibleMoveList.add(SharedData.chessboardPointMap.get(i*10+j));
-                }
-                if(isValidCapture(selectedPoint,SharedData.chessboardPointMap.get(i*10+j))){
-                    SharedData.possibleCaptureList.add(SharedData.chessboardPointMap.get(i*10+j));
-                }
-            }
-        }
-    }
-
-    public void restart() {
-        SharedData.stepList.clear();
-        this.initGrid();
-        this.initPieces();
-    }
-
 }
-
-

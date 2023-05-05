@@ -1,11 +1,9 @@
 package view;
 
-import controller.GameController;
+import view.TimerFrame.clock.ClockFrame;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * 这个类表示游戏过程中的整个游戏界面，是一切的载体
@@ -14,9 +12,9 @@ public class ChessGameFrame extends JFrame {
     //    public final Dimension FRAME_SIZE ;
     private final int WIDTH;
     private final int HEIGHT;
+    private ClockFrame clock;
     private Thread t;
     private BGM bgm;
-
     JLabel background;
     JButton loginButton;
     private String[] backgroundPath={"resource/BackgroundPicture/rocket.jpg",
@@ -32,10 +30,6 @@ public class ChessGameFrame extends JFrame {
 
     private ChessboardComponent chessboardComponent;
 
-    private GameController gameController;
-    public void setGameController(GameController gameController) {
-        this.gameController = gameController;
-    }
     public ChessGameFrame(int width, int height) {
         setTitle("斗兽棋"); //设置标题
         this.WIDTH = width;
@@ -48,24 +42,38 @@ public class ChessGameFrame extends JFrame {
         setLayout(null);
 
 
-
         addChessboard();
+        addClock();
+        //右侧按钮
+        addStopButton();
         addAccountButton();
+        addLoadButton();
+        addPlaybackButton();
         addUndoButton();
         addSaveButton();
         addModeButton();
         addExitButton();
-        addReStartButton();
-        addLoadButton();
+        addSettingsButton();
+
+        //上方按钮
+        addTimeButton();
+        addTurnButton();
+
+
+
+
 
         bgm = new BGM(bgmPath[0]);
         t = new Thread(bgm);
         t.start();
-        addSettingsList();
 
+        bgm.stopBGM();
         addBackground();
         changBackground(backgroundPath[2]);
     }
+
+
+
 
     //settingsList
 
@@ -75,21 +83,6 @@ public class ChessGameFrame extends JFrame {
     private void changBGM(String backgroundPath) {
         background.setIcon(new ImageIcon(backgroundPath));
     }
-
-
-    private void addAccountButton() {
-        JButton button = new JButton("Account");
-        button.setLocation(HEIGHT, HEIGHT / 10 + 440);
-        button.setSize(200, 60);
-        button.setFont(new Font("Rockwell", Font.BOLD, 20));
-        add(button);
-        button.addActionListener(e -> {
-            LoginDialog loginDialog = new LoginDialog(this);
-            loginDialog.setVisible(true);
-        });
-
-    }
-
 
     public ChessboardComponent getChessboardComponent() {
         return chessboardComponent;
@@ -124,45 +117,96 @@ public class ChessGameFrame extends JFrame {
         this.revalidate();
         this.repaint();
     }
-
+//侧面按钮
 
     private void addSaveButton() {
         JButton button = new JButton("Save");
         button.setLocation(HEIGHT, HEIGHT / 10 + 40);
-        button.setSize(200, 60);
+        button.setSize(160, 40);
+        button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(button);
+    }
+    private void addLoadButton() {
+        JButton button = new JButton("Load");
+        button.setLocation(HEIGHT, HEIGHT / 10 + 100);
+        button.setSize(160, 40);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
 
         button.addActionListener(e -> {
-            System.out.println("Click save");
-            gameController.Save();
+            System.out.println("Click load");
+            String path = JOptionPane.showInputDialog(this,"Input Path here");
+//            gameController.loadGameFromFile(path);
         });
-
+    }
+    private void addPlaybackButton() {
+        JButton button = new JButton("Playback");
+        button.setLocation(HEIGHT, HEIGHT / 10 +160 );
+        button.setSize(160, 40);
+        button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(button);
     }
 
     private void addUndoButton() {
         JButton button = new JButton("Undo");
-        button.addActionListener((e) -> JOptionPane.showMessageDialog(this, "就知道你会后悔的"));
-        button.setLocation(HEIGHT, HEIGHT / 10 + 120);
-        button.setSize(200, 60);
+        button.addActionListener((e) -> JOptionPane.showMessageDialog(this, "傻逼"));
+        button.setLocation(HEIGHT, HEIGHT / 10 + 220);
+        button.setSize(160, 40);
+        button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(button);
+    }
+
+    private void addStopButton() {
+        JButton button = new JButton("Stop");
+        button.setLocation(HEIGHT, HEIGHT / 10 + 280);
+        button.setSize(160, 40);
+        button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(button);
+        button.addActionListener((e) -> JOptionPane.showMessageDialog(this, "我是傻逼傻逼吗"));
+    }
+
+
+
+
+    private void addModeButton() {
+        JButton button = new JButton("Mode");
+        button.setLocation(HEIGHT, HEIGHT / 10 + 340);
+        button.setSize(160, 40);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
         button.addActionListener(e -> {
-            System.out.println("Click undo");
-            gameController.undo();
+            ModeDialog modeDialog = new ModeDialog(this);
+            modeDialog.setVisible(true);
         });
     }
-    private void addSettingsList() {
-        JButton button = new JButton("Settings");
-        button.setLocation(HEIGHT, HEIGHT / 10 + 200);
-        button.setSize(200, 60);
+
+
+    private void addAccountButton() {
+        JButton button = new JButton("Account");
+        button.setLocation(HEIGHT, HEIGHT / 10 + 400);
+        button.setSize(160, 40);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
         button.addActionListener(e -> {
-            String[] options = {"Language", "BGM", "Background"};
+            LoginDialog loginDialog = new LoginDialog(this);
+            loginDialog.setVisible(true);
+        });
+
+    }
+
+    private void  addSettingsButton() {
+        JButton button = new JButton("Settings");
+        button.setLocation(HEIGHT, HEIGHT / 10 + 460);
+        button.setSize(160, 40);
+        button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(button);
+        button.addActionListener(e -> {
+            String[] options = {"Language", "BGM", "Background","Clock"};
             String[] languageOptions = {"Language-Chinese", "Language-English", "Language-Japanese"};
-            String[] bgmOptions = {"Baby", "Let me love you", "summer Paris", "piano"};
+            String[] bgmOptions = {"Baby", "Let me love you", "summer Paris", "piano","CLOSE"};
             String[] backgroundOptions = {"Background-rocket", "Background-earth", "Background-space"};
+            String[] ClockOptions = {"Clock-Visible", "Clock-invisible"};
+
             JPanel panel = new JPanel();
             JComboBox<String> optionList = new JComboBox<>(options);
             optionList.addActionListener(evt -> {
@@ -193,6 +237,9 @@ public class ChessGameFrame extends JFrame {
                                     bgm.stopBGM();
                                     bgm.setBGMPath(bgmPath[3]);
                                     bgm.startBGM();
+                                    break;
+                                case "CLOSE":
+                                    bgm.stopBGM();
                                     break;
                                 default:
                             }
@@ -226,6 +273,29 @@ public class ChessGameFrame extends JFrame {
                         panel.repaint();
 
                         break;
+
+                    case "Clock":
+                        selectedList = new JComboBox<>(ClockOptions);
+                        selectedList.addActionListener(Clocke -> {
+                            switch ((String) selectedList.getSelectedItem()) {
+                                case "Clock-Visible":
+                                    clock.setVisible(true);
+                                    break;
+                                case "Clock-invisible":
+                                    clock.setVisible(false);
+                                    break;
+
+                                default:
+                            }
+                        });
+                        panel.removeAll();
+                        panel.add(selectedList);
+                        panel.revalidate();
+                        panel.repaint();
+
+
+
+
                     default:
                         return;
                 }
@@ -238,61 +308,61 @@ public class ChessGameFrame extends JFrame {
             JOptionPane.showMessageDialog(null, panel, "Settings", JOptionPane.PLAIN_MESSAGE);
         });
     }
-
-
-
-    private void addModeButton() {
-        JButton button = new JButton("Mode");
-        button.setLocation(HEIGHT, HEIGHT / 10 + 280);
-        button.setSize(200, 60);
-        button.setFont(new Font("Rockwell", Font.BOLD, 20));
-        add(button);
-        button.addActionListener(e -> {
-            ModeDialog modeDialog = new ModeDialog(this);
-            modeDialog.setVisible(true);
-        });
-    }
     private void addExitButton() {
         JButton button = new JButton("Exit");
-        button.setLocation(HEIGHT, HEIGHT / 10 + 360);
-        button.setSize(200, 60);
+        button.setLocation(HEIGHT, HEIGHT / 10 + 520);
+        button.setSize(160, 40);
+        button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(button);
+        button.addActionListener((e) ->
+                System.exit(0));}
+
+
+    private void addClock() {
+        clock = new ClockFrame();
+        clock.setLocation(100, 100);
+        clock.setVisible(false);
+    }
+
+
+
+//上面两个按钮
+
+    private void addTurnButton() {
+        JButton button = new JButton("Turn: ");
+        button.setLocation(WIDTH/2, HEIGHT / 25 );
+        button.setSize(300, 40);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
         button.addActionListener((e) -> JOptionPane.showMessageDialog(this, "我是傻逼傻逼吗"));
-
-        ;
     }
 
-    private void addReStartButton() {
-        JButton button = new JButton("ReStart");
-        button.setLocation(HEIGHT, HEIGHT / 10 - 80);
-        button.setSize(200, 60);
+
+    private void addTimeButton() {
+        JButton button = new JButton("Time: ");
+        button.setLocation(WIDTH/10, HEIGHT / 25);
+        button.setSize(300, 40);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
-        button.addActionListener(e -> {
-            System.out.println("Click start");
-            gameController.restart();
-        });
+        button.addActionListener((e) -> JOptionPane.showMessageDialog(this, "我是傻逼傻逼吗"));
     }
 
-    public void addLoadButton() {
-        JButton button = new JButton("Load");
-        button.setLocation(HEIGHT, HEIGHT / 10 );
-        button.setSize(200, 60);
-        button.setFont(new Font("Rockwell", Font.BOLD, 20));
-        add(button);
-        button.addActionListener(e -> {
-            System.out.println("Click load");
-            gameController.loading();
-        });
-}}
+    public ClockFrame getClock() {
+        return clock;
+    }
+
+
+
+
+
+}
 
 
 
 
 //        JButton button = new JButton("Settings");
 //        button.setLocation(HEIGHT, HEIGHT / 10 + 260);
-//        button.setSize(200, 60);
+//        button.setSize(160, 60);
 //        button.setFont(new Font("Rockwell", Font.BOLD, 20));
 //        add(button);
 //        button.addActionListener(e ->
@@ -336,7 +406,7 @@ public class ChessGameFrame extends JFrame {
 //            }
 //        });
 //        settingsList.setLocation(HEIGHT, HEIGHT / 10 + 340);
-//        settingsList.setSize(200, 60);
+//        settingsList.setSize(160, 60);
 //        settingsList.setFont(new Font("Rockwell", Font.BOLD, 20));
 //        add(settingsList);
 //        this.revalidate();
@@ -372,35 +442,13 @@ public class ChessGameFrame extends JFrame {
 
 
 
-//        button.addActionListener(e -> {
-//            System.out.println("Click save");
-//            String path = JOptionPane.showInputDialog("存档名");
-//            while (path.equals("")){
-//                JOptionPane.showMessageDialog(null, "存档名不能为空");
-//                path = JOptionPane.showInputDialog("存档名");
-//            }
-//            view.controller.saveGame(path);
-//            new LoadFrame();
-//        });
 
 
 
 
 
 
-//    private void addLoadButton() {
-//        JButton button = new JButton("Load");
-//        button.setLocation(HEIGHT, HEIGHT / 10 + 240);
-//        button.setSize(200, 60);
-//        button.setFont(new Font("Rockwell", Font.BOLD, 20));
-//        add(button);
-//
-//        button.addActionListener(e -> {
-//            System.out.println("Click load");
-//            String path = JOptionPane.showInputDialog(this,"Input Path here");
-//            gameController.loadGameFromFile(path);
-//        });
-//    }
+
 
 
 
