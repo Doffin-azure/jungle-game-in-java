@@ -1,8 +1,6 @@
 package model;
-
-import java.util.HashMap;
-import view.ChessboardComponent;
-import model.sharedData;
+import model.SharedData;
+import view.*;
 /**
  * This class store the real chess information.
  * The Chessboard has 9*7 cells, and each cell has a position for chess
@@ -64,7 +62,7 @@ public class Chessboard {
         return chessPiece;
     }
 
-    private void setChessPiece(ChessboardPoint point, ChessPiece chessPiece) {
+    public void setChessPiece(ChessboardPoint point, ChessPiece chessPiece) {
         getGridAt(point).setPiece(chessPiece);
     }
 
@@ -105,7 +103,7 @@ public class Chessboard {
         }
         if (calculateDistance(src, dest) != 1) {
             if (getChessPieceAt(src).getName().equals("Lion") || getChessPieceAt(src).getName().equals("Tiger")) {
-                if(dest.getName().equals("river")){
+                if(dest.getName().equals("River")){
                     return false;
                 }
                 if (src.getCol() == dest.getCol()) {
@@ -120,7 +118,7 @@ public class Chessboard {
                         if (getChessPieceAt(new ChessboardPoint(row, col)) != null) {
                             return false;
                         }
-                        if(!sharedData.chessboardPointMap.get(row*10+col).getName().equals("river")){
+                        if(!SharedData.chessboardPointMap.get(row*10+col).getName().equals("River")){
                             return false;
                         }
                         if (row > dest.getRow()) {
@@ -143,7 +141,7 @@ public class Chessboard {
                         if (getChessPieceAt(new ChessboardPoint(row, col)) != null) {
                             return false;
                         }
-                        if (!sharedData.chessboardPointMap.get(row * 10 + col).getName().equals("River")) {
+                        if (!SharedData.chessboardPointMap.get(row * 10 + col).getName().equals("River")) {
                             return false;
                         }
                         if (col > dest.getCol()) {
@@ -172,9 +170,40 @@ public class Chessboard {
             return false;
         } // if the move is not valid, return false
         if (getChessPieceAt(src).canCapture(getChessPieceAt(dest))) {
+            if (src.getName().equals("River") && getChessPieceAt(src).getName().equals("Rat")) {
+                return false;
+            }
             return true;
         }
         return false;
 
     }
+
+    public void recordStep(ChessboardPoint src, ChessboardPoint dest, int turn, AnimalChessComponent animalChessComponent){
+        ChessPiece test=getChessPieceAt(dest);
+        Step step = new Step(src, dest, getChessPieceAt(src), getChessPieceAt(dest), turn, animalChessComponent);
+        SharedData.stepList.add(step);
+    }
+
+    public  void findPossibleStep(ChessboardPoint selectedPoint){
+        SharedData.possibleMoveList.clear();
+        SharedData.possibleCaptureList.clear();
+        for(int i=0;i<9;i++){
+            for(int j=0;j<7;j++){
+                if(isValidMove(selectedPoint,SharedData.chessboardPointMap.get(i*10+j))){
+                    SharedData.possibleMoveList.add(SharedData.chessboardPointMap.get(i*10+j));
+                }
+                if(isValidCapture(selectedPoint,SharedData.chessboardPointMap.get(i*10+j))){
+                    SharedData.possibleCaptureList.add(SharedData.chessboardPointMap.get(i*10+j));
+                }
+            }
+        }
+    }
+
+    public void restart() {
+        SharedData.stepList.clear();
+        this.initGrid();
+        this.initPieces();
+    }
+
 }

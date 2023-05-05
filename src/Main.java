@@ -10,7 +10,7 @@ public class Main {
             FirstFrame mainFrame = new FirstFrame();
             GameController gameController = new GameController(mainFrame.getChessBoardFrame().getChessboardComponent(), new Chessboard());
             mainFrame.setVisible(true);
-
+            mainFrame.getChessBoardFrame().setGameController(gameController);
         });
     }
 }

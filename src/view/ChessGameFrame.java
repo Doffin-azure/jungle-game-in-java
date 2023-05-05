@@ -1,10 +1,12 @@
 package view;
 
 import view.TimerFrame.clock.ClockFrame;
-
+import model.*;
 import javax.swing.*;
 import java.awt.*;
-
+import controller.GameController;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 /**
  * 这个类表示游戏过程中的整个游戏界面，是一切的载体
  */
@@ -15,6 +17,10 @@ public class ChessGameFrame extends JFrame {
     private ClockFrame clock;
     private Thread t;
     private BGM bgm;
+    private GameController gameController;
+    public void setGameController(GameController gameController) {
+        this.gameController = gameController;
+    }
     JLabel background;
     JButton loginButton;
     private String[] backgroundPath={"resource/BackgroundPicture/rocket.jpg",
@@ -125,6 +131,11 @@ public class ChessGameFrame extends JFrame {
         button.setSize(160, 40);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
+        button.addActionListener(e -> {
+            System.out.println("Click save");
+            gameController.Save();
+        });
+
     }
     private void addLoadButton() {
         JButton button = new JButton("Load");
@@ -135,25 +146,31 @@ public class ChessGameFrame extends JFrame {
 
         button.addActionListener(e -> {
             System.out.println("Click load");
-            String path = JOptionPane.showInputDialog(this,"Input Path here");
-//            gameController.loadGameFromFile(path);
+            gameController.loading();
         });
     }
     private void addPlaybackButton() {
-        JButton button = new JButton("Playback");
+        JButton button = new JButton("Restart");
         button.setLocation(HEIGHT, HEIGHT / 10 +160 );
         button.setSize(160, 40);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
+        button.addActionListener(e -> {
+            System.out.println("Click restart");
+            gameController.restart();
+        });
     }
 
     private void addUndoButton() {
         JButton button = new JButton("Undo");
-        button.addActionListener((e) -> JOptionPane.showMessageDialog(this, "傻逼"));
+        button.addActionListener((e) -> JOptionPane.showMessageDialog(this, "就知道你会后悔的"));
         button.setLocation(HEIGHT, HEIGHT / 10 + 220);
         button.setSize(160, 40);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
+        button.addActionListener(e -> {
+            System.out.println("Click undo");
+            gameController.undo();});
     }
 
     private void addStopButton() {
@@ -162,7 +179,7 @@ public class ChessGameFrame extends JFrame {
         button.setSize(160, 40);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
-        button.addActionListener((e) -> JOptionPane.showMessageDialog(this, "我是傻逼傻逼吗"));
+        button.addActionListener((e) -> JOptionPane.showMessageDialog(this, "游戏已经暂停"));
     }
 
 

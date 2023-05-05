@@ -23,6 +23,9 @@ public class ChessPiece {
         return originRank;
     }
 
+    private PlayerColor winner = null;
+
+
     public ChessPiece(PlayerColor owner, String name, int rank,String address) {
         this.owner = owner;
         this.name = name;
@@ -32,6 +35,10 @@ public class ChessPiece {
     }
 
     public boolean canCapture(ChessPiece target) {
+        if(target==null){
+            return false;
+        }
+
         // TODO: Finish this method!
         if(this.rank>=target.rank&&(this.rank!=8||target.rank!=1)){
             return true;
@@ -53,4 +60,17 @@ public class ChessPiece {
     public String getAddress(){
         return address;
     }
+
+
+    @Override
+    public String toString() {
+        return "ChessPiece{" +
+                "owner=" + owner +
+                ", name='" + name + '\'' +
+                ", rank=" + rank +
+                '}';
+    }
 }
+
+
+

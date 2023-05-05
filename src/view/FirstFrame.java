@@ -7,6 +7,11 @@ import java.awt.*;
 
 public class FirstFrame extends JFrame {
     private JLabel backgroundLabel;
+
+    public ChessGameFrame getGameFrame() {
+        return gameFrame;
+    }
+
     ChessGameFrame gameFrame;
     JLabel background0;
 
