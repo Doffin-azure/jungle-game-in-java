@@ -9,4 +9,8 @@ public class SharedData {
     public static ArrayList<Step> stepList = new ArrayList<>();
     public static ArrayList<Step> loadStepList = new ArrayList<>();
     public static ArrayList<ChessPiece> chessPieceList = new ArrayList<>();
+
+    public static ArrayList<ChessboardPoint> possibleMoveList = new ArrayList<>();
+
+    public static ArrayList<ChessboardPoint> possibleCaptureList = new ArrayList<>();
 }

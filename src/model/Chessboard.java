@@ -105,7 +105,7 @@ public class Chessboard {
         }
         if (calculateDistance(src, dest) != 1) {
             if (getChessPieceAt(src).getName().equals("Lion") || getChessPieceAt(src).getName().equals("Tiger")) {
-                if(dest.getName().equals("river")){
+                if(dest.getName().equals("River")){
                     return false;
                 }
                 if (src.getCol() == dest.getCol()) {
@@ -120,7 +120,8 @@ public class Chessboard {
                         if (getChessPieceAt(new ChessboardPoint(row, col)) != null) {
                             return false;
                         }
-                        if(!SharedData.chessboardPointMap.get(row*10+col).getName().equals("river")){
+                        if(!SharedData.chessboardPointMap.get(row*10+col).getName().equals("" +
+                                "River")){
                             return false;
                         }
                         if (row > dest.getRow()) {
@@ -186,12 +187,18 @@ public class Chessboard {
         SharedData.stepList.add(step);
     }
 
-    public void unDoStep(Step step) {
-        if (step.getCapturedChessPiece() == null) {
-            moveChessPiece(step.getTo(), step.getFrom());
-        } else {
-            setChessPiece(step.getFrom(), step.getMovedChessPiece());
-            setChessPiece(step.getTo(), step.getCapturedChessPiece());
+    public  void findPossibleStep(ChessboardPoint selectedPoint){
+        SharedData.possibleMoveList.clear();
+        SharedData.possibleCaptureList.clear();
+        for(int i=0;i<9;i++){
+            for(int j=0;j<7;j++){
+                if(isValidMove(selectedPoint,SharedData.chessboardPointMap.get(i*10+j))){
+                    SharedData.possibleMoveList.add(SharedData.chessboardPointMap.get(i*10+j));
+                }
+                if(isValidCapture(selectedPoint,SharedData.chessboardPointMap.get(i*10+j))){
+                    SharedData.possibleCaptureList.add(SharedData.chessboardPointMap.get(i*10+j));
+                }
+            }
         }
     }
 

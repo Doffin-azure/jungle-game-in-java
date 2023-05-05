@@ -20,6 +20,8 @@ import java.util.regex.Pattern;
  */
 public class GameController implements GameListener {
 
+    private PlayerColor winner = null;
+
     private int count = 1;
 
     public int getCount() {
@@ -202,7 +204,7 @@ public class GameController implements GameListener {
                     this.model.getChessPieceAt(point).setRank(0);
                 }
                 if (point.getName().equals("Den")) {
-                    win();
+                    winner = currentPlayer;
                     VictoryDialog.displayWinning();
                 }// finish the game if the chess enter the Den
             } // finish the game
@@ -215,6 +217,7 @@ public class GameController implements GameListener {
         if (selectedPoint == null) {
             if (model.getChessPieceOwner(point).equals(currentPlayer)) {
                 selectedPoint = point;
+                model.findPossibleStep(point);
                 component.setSelected(true);
                 component.repaint();
             }

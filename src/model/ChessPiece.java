@@ -32,6 +32,9 @@ public class ChessPiece {
     }
 
     public boolean canCapture(ChessPiece target) {
+        if(target==null){
+            return false;
+        }
         // TODO: Finish this method!
         if(this.rank>=target.rank&&(this.rank!=8||target.rank!=1)){
             return true;
