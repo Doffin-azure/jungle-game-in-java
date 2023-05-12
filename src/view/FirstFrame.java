@@ -38,9 +38,11 @@ public class FirstFrame extends JFrame {
 
 //        this.aiFrame = new AIFrame();
 //        aiFrame.beginFrame = this;
-        addBackground();
-        addGeneralModeButton();
+
         addAIModeButton();
+        addGeneralModeButton();
+        addBackground();
+        this.repaint();
 
     }
 
@@ -93,7 +95,7 @@ public class FirstFrame extends JFrame {
         background0.setLocation(0, 0);
         this.add(background0);
         this.revalidate();
-        this.repaint();
+//        this.repaint();
     }
 
 }

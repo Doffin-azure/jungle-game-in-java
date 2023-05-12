@@ -2,11 +2,15 @@ package view;
 
 import view.TimerFrame.clock.ClockFrame;
 import model.*;
+
 import javax.swing.*;
 import java.awt.*;
+
 import controller.GameController;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 /**
  * 这个类表示游戏过程中的整个游戏界面，是一切的载体
  */
@@ -18,16 +22,18 @@ public class ChessGameFrame extends JFrame {
     private Thread t;
     private BGM bgm;
     private GameController gameController;
+
     public void setGameController(GameController gameController) {
         this.gameController = gameController;
     }
+
     JLabel background;
     JButton loginButton;
-    private String[] backgroundPath={"resource/BackgroundPicture/rocket.jpg",
+    private String[] backgroundPath = {"resource/BackgroundPicture/rocket.jpg",
             "resource/BackgroundPicture/earth.png",
             "resource/BackgroundPicture/space.jpg"
     };//背景图片路径
-    private String[] bgmPath={"Music/baby.wav",
+    private String[] bgmPath = {"Music/baby.wav",
             "Music/letMeLoveYou.wav",
             "Music/piano.wav",
             "Music/summertimeInParis.wav"
@@ -60,13 +66,11 @@ public class ChessGameFrame extends JFrame {
         addModeButton();
         addExitButton();
         addSettingsButton();
+        addAIButton();
 
         //上方按钮
         addTimeButton();
         addTurnButton();
-
-
-
 
 
         bgm = new BGM(bgmPath[0]);
@@ -79,13 +83,12 @@ public class ChessGameFrame extends JFrame {
     }
 
 
-
-
     //settingsList
 
     private void changBackground(String backgroundPath) {
         background.setIcon(new ImageIcon(backgroundPath));
     }
+
     private void changBGM(String backgroundPath) {
         background.setIcon(new ImageIcon(backgroundPath));
     }
@@ -137,6 +140,7 @@ public class ChessGameFrame extends JFrame {
         });
 
     }
+
     private void addLoadButton() {
         JButton button = new JButton("Load");
         button.setLocation(HEIGHT, HEIGHT / 10 + 100);
@@ -149,9 +153,10 @@ public class ChessGameFrame extends JFrame {
             gameController.loading();
         });
     }
+
     private void addPlaybackButton() {
         JButton button = new JButton("Restart");
-        button.setLocation(HEIGHT, HEIGHT / 10 +160 );
+        button.setLocation(HEIGHT, HEIGHT / 10 + 160);
         button.setSize(160, 40);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
@@ -170,7 +175,8 @@ public class ChessGameFrame extends JFrame {
         add(button);
         button.addActionListener(e -> {
             System.out.println("Click undo");
-            gameController.undo();});
+            gameController.undo();
+        });
     }
 
     private void addStopButton() {
@@ -181,8 +187,6 @@ public class ChessGameFrame extends JFrame {
         add(button);
         button.addActionListener((e) -> JOptionPane.showMessageDialog(this, "游戏已经暂停"));
     }
-
-
 
 
     private void addModeButton() {
@@ -211,16 +215,28 @@ public class ChessGameFrame extends JFrame {
 
     }
 
-    private void  addSettingsButton() {
+    private void addAIButton() {
+        JButton button = new JButton("AI");
+        button.setLocation(HEIGHT - 100, HEIGHT / 10 + 400);
+        button.setSize(160, 40);
+        button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(button);
+        button.addActionListener(e -> {
+            System.out.println("Click AI");
+            gameController.AIPlay2();
+        });
+    }
+
+    private void addSettingsButton() {
         JButton button = new JButton("Settings");
         button.setLocation(HEIGHT, HEIGHT / 10 + 460);
         button.setSize(160, 40);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
         button.addActionListener(e -> {
-            String[] options = {"Language", "BGM", "Background","Clock"};
+            String[] options = {"Language", "BGM", "Background", "Clock"};
             String[] languageOptions = {"Language-Chinese", "Language-English", "Language-Japanese"};
-            String[] bgmOptions = {"Baby", "Let me love you", "summer Paris", "piano","CLOSE"};
+            String[] bgmOptions = {"Baby", "Let me love you", "summer Paris", "piano", "CLOSE"};
             String[] backgroundOptions = {"Background-rocket", "Background-earth", "Background-space"};
             String[] ClockOptions = {"Clock-Visible", "Clock-invisible"};
 
@@ -311,8 +327,6 @@ public class ChessGameFrame extends JFrame {
                         panel.repaint();
 
 
-
-
                     default:
                         return;
                 }
@@ -325,6 +339,7 @@ public class ChessGameFrame extends JFrame {
             JOptionPane.showMessageDialog(null, panel, "Settings", JOptionPane.PLAIN_MESSAGE);
         });
     }
+
     private void addExitButton() {
         JButton button = new JButton("Exit");
         button.setLocation(HEIGHT, HEIGHT / 10 + 520);
@@ -332,7 +347,8 @@ public class ChessGameFrame extends JFrame {
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
         button.addActionListener((e) ->
-                System.exit(0));}
+                System.exit(0));
+    }
 
 
     private void addClock() {
@@ -342,12 +358,11 @@ public class ChessGameFrame extends JFrame {
     }
 
 
-
 //上面两个按钮
 
     private void addTurnButton() {
         JButton button = new JButton("Turn: ");
-        button.setLocation(WIDTH/2, HEIGHT / 25 );
+        button.setLocation(WIDTH / 2, HEIGHT / 25);
         button.setSize(300, 40);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
@@ -357,7 +372,7 @@ public class ChessGameFrame extends JFrame {
 
     private void addTimeButton() {
         JButton button = new JButton("Time: ");
-        button.setLocation(WIDTH/10, HEIGHT / 25);
+        button.setLocation(WIDTH / 10, HEIGHT / 25);
         button.setSize(300, 40);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
@@ -369,12 +384,7 @@ public class ChessGameFrame extends JFrame {
     }
 
 
-
-
-
 }
-
-
 
 
 //        JButton button = new JButton("Settings");
@@ -432,28 +442,19 @@ public class ChessGameFrame extends JFrame {
 //    });
 
 
-
-
-
-
-
-
-
-
 //            // 创建一个按钮
 //            JButton button = new JButton("Click me");
 //            button.setBounds(50, 50, 100, 30);
 
-            // 将按钮添加到 JFrame 中
+// 将按钮添加到 JFrame 中
 //            frame.add(button);
 
 
-
-            // 调用 JFrame 的 revalidate() 和 repaint() 方法，重新布局并绘制组件
+// 调用 JFrame 的 revalidate() 和 repaint() 方法，重新布局并绘制组件
 //            this.revalidate();
 //            frame.repaint();
 
-            // 显示 JFrame
+// 显示 JFrame
 //            frame.setVisible(true);
 
 
