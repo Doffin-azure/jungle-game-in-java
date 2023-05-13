@@ -13,4 +13,10 @@ public class SharedData {
     public static ArrayList<ChessboardPoint> possibleMoveList = new ArrayList<>();
 
     public static ArrayList<ChessboardPoint> possibleCaptureList = new ArrayList<>();
+
+    public static Map<Integer, Step> possibleMoveMap = new HashMap<>();
+
+    public static Map<Integer, Step> RandomMoveMapWithValue = new HashMap<>();
+
+
 }
