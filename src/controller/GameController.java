@@ -9,8 +9,6 @@ import view.VictoryDialog;
 
 import java.io.*;
 import java.util.regex.Pattern;
-import javax.swing.*;
-import java.util.ArrayList;
 
 /**
  * Controller is the connection between model and view,
@@ -32,9 +30,7 @@ public class GameController implements GameListener {
 
     private Chessboard model;
     private ChessboardComponent view;
-    public JButton TimerCounterButton;
-    public static TimerCounter timerCounter;
-    public ArrayList<ChessboardPoint> possibleMovePoints;
+
     // Record whether there is a selected piece before
     private ChessboardPoint selectedPoint;
     private PlayerColor winner = null;
@@ -59,7 +55,7 @@ public class GameController implements GameListener {
         this.view = view;
         this.model = model;
         this.currentPlayer = PlayerColor.BLUE;
-        this.TimerCounterButton = view.TimerCounterButton;
+
         view.registerController(this);
         initialize();
         view.initiateChessComponent(model);
@@ -75,13 +71,8 @@ public class GameController implements GameListener {
     }
 
     // after a valid move swap the player
-    public void swapColor() {
+    private void swapColor() {
         currentPlayer = currentPlayer == PlayerColor.BLUE ? PlayerColor.RED : PlayerColor.BLUE;
-        if(currentPlayer == PlayerColor.BLUE)
-            view.TurnStatusButton.setText(String.format("Turn %d : Player Blue",count));
-        else
-            view.TurnStatusButton.setText(String.format("Turn %d : Player Red",count));
-    }
     }
 
     public void loading() {
@@ -263,9 +254,7 @@ public class GameController implements GameListener {
     // click an empty cell
     @Override
     public void onPlayerClickCell(ChessboardPoint point, CellComponent component) {
-        possibleMovePoints = null;
-        setCanStepFalse();
-    if (selectedPoint != null && model.isValidMove(selectedPoint, point) || model.isNull(point)) {
+        if (selectedPoint != null && model.isValidMove(selectedPoint, point) || model.isNull(point)) {
             if (point.getName().equals("Den") &&
                     ((this.currentPlayer.equals(PlayerColor.BLUE) && point.getRow() < 3)
                             || (this.currentPlayer.equals(PlayerColor.RED) && point.getRow() > 6))) {
@@ -273,7 +262,6 @@ public class GameController implements GameListener {
                 model.recordStep(selectedPoint, point, count, null);
                 count++;
                 model.moveChessPiece(selectedPoint, point);
-                possibleMovePoints = null;
                 view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
                 selectedPoint = null;
                 swapColor();
@@ -286,8 +274,7 @@ public class GameController implements GameListener {
                 }
                 if (point.getName().equals("Den")) {
                     winner = currentPlayer;
-                    VictoryDialog a = new VictoryDialog();
-                    VictoryDialog.displayWinning(winner,a);
+                    VictoryDialog.displayWinning();
                 }// finish the game if the chess enter the Den
             } // finish the game
         }
@@ -298,25 +285,16 @@ public class GameController implements GameListener {
     public void onPlayerClickChessPiece(ChessboardPoint point, AnimalChessComponent component) {
         if (selectedPoint == null) {
             if (model.getChessPieceOwner(point).equals(currentPlayer)) {
-                possibleMovePoints = getAndSetIsValidMovePoints(point);
-                possibleMovePoints = new ArrayList<>(getAndSetIsValidMovePoints(point));
                 selectedPoint = point;
                 model.findPossibleStep(point);
                 component.setSelected(true);
-                component.revalidate();
                 component.repaint();
-                view.repaint();
-                view.revalidate();
             }
         } else if (selectedPoint.equals(point)) {
             selectedPoint = null;
-            possibleMovePoints = null;
-            setCanStepFalse();
             component.setSelected(false);
             component.repaint();
         } else if (!model.isNull(point)) {
-            possibleMovePoints = null;
-            setCanStepFalse();
             AnimalChessComponent chessComponent = (AnimalChessComponent) view.getGridComponentAt(point).getComponents()[0];
             model.recordStep(selectedPoint, point, count, chessComponent);
             count++;
@@ -326,44 +304,11 @@ public class GameController implements GameListener {
 
             view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
             selectedPoint = null;
-
             swapColor();
             view.repaint();
             if (point.getName().equals("Trap") && ((this.currentPlayer.equals(PlayerColor.BLUE) && point.getRow() < 3)
                     || (this.currentPlayer.equals(PlayerColor.RED) && point.getRow() > 6))) {
                 this.model.getChessPieceAt(point).setRank(0);
-            }
-
-            public ArrayList<ChessboardPoint> getAndSetIsValidMovePoints(ChessboardPoint sourcePoint) {
-                ArrayList<ChessboardPoint> validMovePointsList = new ArrayList<>();
-                for (int i = 0; i < 9; i++) {
-                    for (int j = 0; j < 7; j++) {
-                        ChessboardPoint destPoint = new ChessboardPoint(i, j);
-                        if (model.isValidMove(sourcePoint, destPoint)) {
-                            view.gridComponents[i][j].canStep = true;
-                            validMovePointsList.add(destPoint);
-                        }
-                        if (model.isValidCapture(sourcePoint, destPoint)) {
-                            view.gridComponents[i][j].canStep = true;
-                            validMovePointsList.add(destPoint);
-                        }
-                    }
-                }
-                return validMovePointsList;
-            }
-
-//5.11写：
-
-
-
-
-            //将每个Cell的canstep状态设为不可以
-            public void setCanStepFalse() {
-                for (int i = 0; i < 9; i++) {
-                    for (int j = 0; j < 7; j++) {
-                        view.gridComponents[i][j].canStep = false;
-                    }
-                }
             }
         }
     }

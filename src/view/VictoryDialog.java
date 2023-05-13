@@ -1,11 +1,8 @@
 package view;
 
-import model.PlayerColor;
-
 import javax.swing.*;
 
 public class VictoryDialog extends JFrame {
-    public static ImageIcon icon;
 
     public VictoryDialog() {
         super("Victory");
@@ -15,16 +12,12 @@ public class VictoryDialog extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
 
-        icon = new ImageIcon("resource/Victory/victory.jfif");
+        ImageIcon icon = new ImageIcon("resource/Victory/victory.jfif");
+        JOptionPane.showMessageDialog(this, "GAME\nOVER", "The Player A/B have win the game!!! ", JOptionPane.INFORMATION_MESSAGE, icon);
     }
 
-    public static void displayWinning(PlayerColor winnerColor,VictoryDialog victoryDialog) {
+    public static void displayWinning() {
         SwingUtilities.invokeLater(() -> {
-            if(winnerColor == PlayerColor.RED)
-                JOptionPane.showMessageDialog(victoryDialog, "GAME\nOVER", "The Player RED have win the game!!! ", JOptionPane.INFORMATION_MESSAGE, icon);
-            else
-                JOptionPane.showMessageDialog(victoryDialog, "GAME\nOVER", "The Player BLUE have win the game!!! ", JOptionPane.INFORMATION_MESSAGE, icon);
-
             new VictoryDialog().setVisible(true);
         });
     }

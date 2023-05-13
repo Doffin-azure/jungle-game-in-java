@@ -47,10 +47,7 @@ public class AnimalChessComponent extends JComponent {
 
         // Draw the GIF image
         if (gifImage != null) {
-            if(this.owner.getColor() == Color.BLUE) g.setColor(new Color(41, 6, 199, 255));
-            else g.setColor(new Color(255, 0, 0, 255));
-            g.fillOval(0,0 ,getWidth(), getWidth());
-            g.drawImage(gifImage.getImage(),11,11,getWidth()-22,getHeight()-22, this);
-
+            g.drawImage(gifImage.getImage(), 0, 0, getWidth(), getHeight(), this);
         }
-}}
+    }
+}
