@@ -7,7 +7,9 @@ import java.io.InputStream;
 public class BGM implements Runnable{
     private String MusicPath;
     private boolean isStop=false;
+    private InputStream is;
     private Clip runningBGM;
+    private AudioInputStream ais;
     public BGM(String MusicPath)
     {
         this.MusicPath=MusicPath;
@@ -15,6 +17,7 @@ public class BGM implements Runnable{
     public void setBGMPath(String musicPath)
     {
         this.MusicPath=musicPath;
+
     }
     public void stopBGM()
     {
@@ -28,17 +31,31 @@ public class BGM implements Runnable{
     {
         try{
             runningBGM = AudioSystem.getClip();
-            InputStream is = BGM.class.getClassLoader().getResourceAsStream(this.MusicPath);
-            AudioInputStream ais = AudioSystem.getAudioInputStream(is);
+            is = BGM.class.getClassLoader().getResourceAsStream(this.MusicPath);
+            ais = AudioSystem.getAudioInputStream(is);
             runningBGM.open(ais);
             runningBGM.start();
             runningBGM.loop(Clip.LOOP_CONTINUOUSLY);
-            while(isStop)
-            {
-                runningBGM.stop();
-                Thread.sleep(1000);
 
+            while(true){
+                if(!isStop)
+                {
+                    runningBGM.start();
+                    Thread.sleep(1000);
+                }
+                else
+                {
+                    runningBGM.stop();
+                    Thread.sleep(1000);
+                }
             }
+
+//            while(isStop)
+//            {
+//                runningBGM.stop();
+//                Thread.sleep(1000);
+//
+//            }
 
 
         } catch (LineUnavailableException e) {
@@ -52,5 +69,34 @@ public class BGM implements Runnable{
         }
     }
 
+    public void setIs(InputStream is) {
+        this.is = is;
+    }
+    public void setRunningBGM(Clip runningBGM) {
+        this.runningBGM = runningBGM;
+    }
+    public void setAis(AudioInputStream ais) {
+        this.ais = ais;
+    }
+
+    public String getMusicPath() {
+        return MusicPath;
+    }
+
+    public boolean isStop() {
+        return isStop;
+    }
+
+    public InputStream getIs() {
+        return is;
+    }
+
+    public Clip getRunningBGM() {
+        return runningBGM;
+    }
+
+    public AudioInputStream getAis() {
+        return ais;
+    }
 }
 

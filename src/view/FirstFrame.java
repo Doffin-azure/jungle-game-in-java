@@ -23,8 +23,8 @@ public class FirstFrame extends JFrame {
 
     public FirstFrame() {
         setTitle("Jungle");
-        this.WIDTH = 400;
-        this.HEIGHT = 500;
+        this.WIDTH = 600;
+        this.HEIGHT = 750;
 
         setSize(WIDTH, HEIGHT);
         setLocationRelativeTo(null); // Center the window.
@@ -33,36 +33,30 @@ public class FirstFrame extends JFrame {
 
         ChessGameFrame gameFrame = new ChessGameFrame(1100, 810);
         this.gameFrame = gameFrame;
+
+
 //        这是什么东西？
 //        gameFrame.beginFrame = this;
-
 //        this.aiFrame = new AIFrame();
 //        aiFrame.beginFrame = this;
 
-        addAIModeButton();
         addGeneralModeButton();
+        addAIModeButton();
         addBackground();
-        this.repaint();
 
     }
 
     private void addGeneralModeButton() {
-        JButton button = new JButton("General Mode");
+        JButton button = new JButton("General AI Mode ");
         button.addActionListener((e) -> {
             this.setVisible(false);
             gameFrame.setVisible(true);
             gameFrame.getClock().setVisible(true);
 
-//            计时器待弄
-//            Timer.time = 45;
-//            if (Controller.timer == null){
-//                Controller.timer = new Timer(gameFrame.getBoardView().controller);
-//                Controller.timer.start();
-//
 
         });
-        button.setLocation(100, 100);
-        button.setSize(200, 60);
+        button.setLocation(150, 150);
+        button.setSize(300, 120);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
     }
@@ -75,8 +69,8 @@ public class FirstFrame extends JFrame {
 //            aiFrame.setVisible(true);
 
         });
-        button.setLocation(100, 300);
-        button.setSize(200, 60);
+        button.setLocation(150, 450);
+        button.setSize(300, 120);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
     }
@@ -95,7 +89,7 @@ public class FirstFrame extends JFrame {
         background0.setLocation(0, 0);
         this.add(background0);
         this.revalidate();
-//        this.repaint();
+        this.repaint();
     }
 
 }

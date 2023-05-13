@@ -1,4 +1,4 @@
-import controller.*;
+import controller.GameController;
 import model.Chessboard;
 import view.FirstFrame;
 
@@ -11,8 +11,6 @@ public class Main {
             GameController gameController = new GameController(mainFrame.getChessBoardFrame().getChessboardComponent(), new Chessboard());
             mainFrame.setVisible(true);
             mainFrame.getChessBoardFrame().setGameController(gameController);
-            AI ai = new AI(gameController, gameController.getModel(), mainFrame.getChessBoardFrame().getChessboardComponent());
-            gameController.setAi(ai);
         });
     }
 }
