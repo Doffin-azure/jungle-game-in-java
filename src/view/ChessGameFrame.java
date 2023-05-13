@@ -2,16 +2,11 @@ package view;
 
 import controller.GameController;
 import view.Clock.clock.ClockFrame;
+import view.Dialog.LoginDialog;
+import view.Dialog.ModeDialog;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-
-
 
 
 /**
@@ -138,9 +133,11 @@ public class ChessGameFrame extends JFrame {
         add(button);
         button.addActionListener(e -> {
             System.out.println("Click save");
+//            String path = JOptionPane.showInputDialog("存档名(Format:)");
+            new BGMofClick().PlayClickBGM("resource/Music/ding.wav");
+            JOptionPane.showMessageDialog(null, "存档成功!!!", "存档成功", JOptionPane.INFORMATION_MESSAGE);
             gameController.Save();
         });
-
     }
 
     private void addLoadButton() {
@@ -152,6 +149,25 @@ public class ChessGameFrame extends JFrame {
 
         button.addActionListener(e -> {
             System.out.println("Click load");
+            String path = JOptionPane.showInputDialog("加载档名(Format:)");
+            while (path.equals("")){
+                JOptionPane.showMessageDialog(null, "加载档名不能为空");
+                path = JOptionPane.showInputDialog("加载档名Format: ");
+            }
+
+            if(!path.endsWith(".txt")){
+                JOptionPane.showMessageDialog(null, "文档格式错误\n导致无法识别文档",
+                        "文件路径后缀错误", JOptionPane.ERROR_MESSAGE);
+                System.out.println("文档路径后缀不为.txt");
+                System.out.println("后缀错误");
+            }
+
+            try {
+
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+
             gameController.loading();
         });
     }

@@ -3,6 +3,8 @@ package model;
 import model.SharedData;
 import view.*;
 
+import javax.swing.*;
+
 /**
  * This class store the real chess information.
  * The Chessboard has 9*7 cells, and each cell has a position for chess
@@ -89,10 +91,12 @@ public class Chessboard {
 
     public void captureChessPiece(ChessboardPoint src, ChessboardPoint dest) {
         if (!isValidCapture(src, dest)) {
+            JOptionPane.showMessageDialog(null, "无法移动该棋子，请重新选择", "移动失败", JOptionPane.ERROR_MESSAGE);
             throw new IllegalArgumentException("Illegal chess capture!");
         }
         removeChessPiece(dest);
         moveChessPiece(src, dest);// capture the chess piece
+
     }
 
     public Cell[][] getGrid() {

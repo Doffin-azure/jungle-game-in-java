@@ -11,7 +11,7 @@ public class Step {
         Value = value;
     }
 
-    int Value = 0;
+    int Value=0 ;
     private ChessboardPoint fromWhere;
 
     private ChessboardPoint toWhere;

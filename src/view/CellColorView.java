@@ -39,13 +39,7 @@ public class CellColorView extends JPanel {
 
 //鼠标点击IsValidMove和划过显示
 
-        if (canStep) { // Highlights the possible move model if selected.
-            Graphics2D g2d = (Graphics2D) g;
-            g2d.setColor(new Color(87, 135, 255, 150));
-            //普通矩形美化成为圆角矩形
-            RoundRectangle2D roundedRectangle = new RoundRectangle2D.Double(1, 1, this.getWidth() - 1, this.getHeight() - 1, size/2 , size/2 );
-            g2d.fill(roundedRectangle);
-        }
+
 
         if(mouseSuspendedAt){//Highlights the cell if the mouse is suspended on it
             Graphics2D g2d = (Graphics2D) g;
@@ -62,6 +56,13 @@ public class CellColorView extends JPanel {
             g.drawImage(gifImage.getImage(),1,1,getWidth()-1,getHeight()-1, this);
 
 
+        }
+        if (canStep) { // Highlights the possible move model if selected.
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.setColor(new Color(87, 135, 255, 150));
+            //普通矩形美化成为圆角矩形
+            RoundRectangle2D roundedRectangle = new RoundRectangle2D.Double(1, 1, this.getWidth() - 1, this.getHeight() - 1, size/2 , size/2 );
+            g2d.fill(roundedRectangle);
         }
 
 //        点击

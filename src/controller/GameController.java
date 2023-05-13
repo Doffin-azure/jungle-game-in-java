@@ -3,9 +3,8 @@ package controller;
 import listener.GameListener;
 import model.*;
 import view.AnimalChessComponent;
-import view.CellComponent;
 import view.ChessboardComponent;
-import view.VictoryDialog;
+import view.Dialog.VictoryDialog;
 import view.*;
 
 import java.io.*;
@@ -86,26 +85,17 @@ public class GameController implements GameListener {
 
 
     public void loading() {
-        try (BufferedReader br = new BufferedReader(new FileReader("resource\\save\\save.txt"))) {
-
+        try (BufferedReader br = new BufferedReader(new FileReader("save.txt"))) {
             String line;
             int num = 0;
             while ((line = br.readLine()) != null) {
 
                 Pattern pattern = Pattern.compile("\\d+");
-                Pattern pattern1 = Pattern.compile("(?<==')[^']+(?=')");
                 java.util.regex.Matcher matcher = pattern.matcher(line);
-                java.util.regex.Matcher matcher1 = pattern1.matcher(line);
                 int counts = 0;
                 int[] arr = new int[5];
-                String[] arr1 = new String[2];
                 while (matcher.find() && counts < 4) {
                     arr[counts] = Integer.parseInt(matcher.group());
-                    counts++;
-                }
-                counts = 0;
-                while (matcher1.find() && counts < 2) {
-                    arr1[counts] = matcher1.group();
                     counts++;
                 }
                 num++;
@@ -113,17 +103,10 @@ public class GameController implements GameListener {
                 ChessboardPoint src = new ChessboardPoint(arr[0], arr[1]);
                 ChessboardPoint dest = new ChessboardPoint(arr[2], arr[3]);
                 int turn = arr[4];
-                if (model.getChessPieceAt(src).getName().equals(arr1[0])) {
-                    if (model.getChessPieceAt(dest) == null || model.getChessPieceAt(dest).getName().equals(arr1[1])) {
-                        Step step = new Step(src, dest, null, null, turn, null);
-                        doStep(step);
-                        swapColor();
-                        view.repaint();
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(null, "行棋步骤错误，错误编码:105", "Error", JOptionPane.ERROR_MESSAGE);
-                    break;
-                }//TODO Complete this Component;
+                Step step = new Step(src, dest, null, null, turn, null);
+                doStep(step);
+                swapColor();
+                view.repaint();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -132,7 +115,8 @@ public class GameController implements GameListener {
     }
 
     public void Save() {
-        File file = new File("resource//save//save.txt");
+
+        File file = new File("save.txt");
         try {
             FileWriter fw = new FileWriter(file);
             BufferedWriter bw = new BufferedWriter(fw);
@@ -157,12 +141,7 @@ public class GameController implements GameListener {
             model.moveChessPiece(src, dest);
             if (view != null) {
                 view.setChessComponentAtGrid(dest, view.removeChessComponentAtGrid(src));
-                try {
-                    Thread.sleep(250);
-                    view.paintImmediately(0, 0, view.getWidth(), view.getHeight());
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                view.repaint();
             }
             if (dest.getName().equals("Trap")) {
                 if (dest.getPlayerColor() != model.getChessPieceOwner(dest)) {
@@ -175,14 +154,10 @@ public class GameController implements GameListener {
             model.captureChessPiece(src, dest);
             if (view != null) {
                 view.removeChessComponentAtGrid(dest);
+                view.repaint();
                 view.setChessComponentAtGrid(dest, view.removeChessComponentAtGrid(src));
                 view.repaint();
-                try {
-                    Thread.sleep(250);
-                    view.paintImmediately(0, 0, view.getWidth(), view.getHeight());
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                view.repaint();
             }
             count++;
             if (dest.getName().equals("Trap")) {
@@ -333,22 +308,25 @@ public class GameController implements GameListener {
                 view.repaint();
                 view.revalidate();
             }
-        } else if (selectedPoint.equals(point)) {
+        }
+        else if (selectedPoint.equals(point)) {//click the same chess again and cancel selection
             selectedPoint = null;
             possibleMovePoints = null;
             setCanStepFalse();
             component.setSelected(false);
             component.repaint();
-        } else if (!model.isNull(point)) {
+            view.repaint();
+            view.revalidate();
+        }
+        else if (!model.isNull(point)) {//begin to eat or not
             possibleMovePoints = null;
             setCanStepFalse();
             AnimalChessComponent chessComponent = (AnimalChessComponent) view.getGridComponentAt(point).getComponents()[0];
             model.recordStep(selectedPoint, point, count, chessComponent);
             count++;
             model.captureChessPiece(selectedPoint, point);
-
+            new BGMofClick().PlayClickBGM("resource/Music/tear.wav");//sound of eaten
             view.removeChessComponentAtGrid(point);
-
             view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
             selectedPoint = null;
 
