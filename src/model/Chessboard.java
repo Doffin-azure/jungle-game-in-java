@@ -91,7 +91,6 @@ public class Chessboard {
 
     public void captureChessPiece(ChessboardPoint src, ChessboardPoint dest) {
         if (!isValidCapture(src, dest)) {
-            JOptionPane.showMessageDialog(null, "无法移动该棋子，请重新选择", "移动失败", JOptionPane.ERROR_MESSAGE);
             throw new IllegalArgumentException("Illegal chess capture!");
         }
         removeChessPiece(dest);

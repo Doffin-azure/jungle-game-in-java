@@ -1,0 +1,1 @@
+Step{fromWhere=(2,4) on the chessboard is clicked!, toWhere=(2,3) on the chessboard is clicked!, MovedChessPiece=ChessPiece{owner=BLUE, name='Wlf', rank=4}, CapturedChessPiece=null, turn=1}
