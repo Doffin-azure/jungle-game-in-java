@@ -3,17 +3,7 @@ package model;
 import view.AnimalChessComponent;
 
 public class Step {
-    public int getValue() {
-        return Value;
-    }
-
-    public void setValue(int value) {
-        Value = value;
-    }
-
-    int Value=0 ;
     private ChessboardPoint fromWhere;
-
     private ChessboardPoint toWhere;
     private ChessPiece MovedChessPiece;
     private ChessPiece CapturedChessPiece;

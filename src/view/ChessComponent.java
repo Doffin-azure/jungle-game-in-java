@@ -12,9 +12,7 @@ import java.awt.*;
  */
 public class ChessComponent extends JComponent {
     protected PlayerColor owner;
-
     private boolean selected;
-
     public ChessComponent(PlayerColor owner, int size) {
         this.owner = owner;
         this.selected = false;
@@ -46,4 +44,7 @@ public class ChessComponent extends JComponent {
             g.drawOval(0, 0, getWidth() , getHeight());
         }
     }
+
+
+
 }
