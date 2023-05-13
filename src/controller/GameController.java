@@ -1,51 +1,65 @@
 package controller;
 
 import listener.GameListener;
-import model.Constant;
-import model.PlayerColor;
-import model.Chessboard;
-import model.ChessboardPoint;
-import view.*;
 import model.*;
+import view.AnimalChessComponent;
+import view.CellComponent;
+import view.ChessboardComponent;
+import view.VictoryDialog;
 
-import javax.swing.*;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.regex.Pattern;
+import javax.swing.*;
+import java.util.ArrayList;
+
 /**
  * Controller is the connection between model and view,
  * when a Controller receive a request from a view, the Controller
  * analyzes and then hands over to the model for processing
  * [in this demo the request methods are onPlayerClickCell() and
  * onPlayerClickChessPiece()]
- *
  */
 public class GameController implements GameListener {
+    public void setAi(AI ai) {
+        this.ai = ai;
+    }
+
+    private AI ai;
+
+    public Chessboard getModel() {
+        return model;
+    }
 
     private Chessboard model;
     private ChessboardComponent view;
-
+    public JButton TimerCounterButton;
+    public static TimerCounter timerCounter;
+    public ArrayList<ChessboardPoint> possibleMovePoints;
     // Record whether there is a selected piece before
     private ChessboardPoint selectedPoint;
     private PlayerColor winner = null;
 
-
     private int count = 1;
-    public JButton TimerCounterButton;
-    public static TimerCounter timerCounter;
-    public ArrayList<ChessboardPoint> possibleMovePoints;
+
     public int getCount() {
         return count;
     }
+
     public void setCount(int count) {
         this.count = count;
     }
-    public PlayerColor currentPlayer = PlayerColor.BLUE;
+
+    public PlayerColor getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    private PlayerColor currentPlayer = PlayerColor.BLUE;
+
     public GameController(ChessboardComponent view, Chessboard model) {
         this.view = view;
         this.model = model;
         this.currentPlayer = PlayerColor.BLUE;
-        this.TimerCounterButton= view.TimerCounterButton;
+        this.TimerCounterButton = view.TimerCounterButton;
         view.registerController(this);
         initialize();
         view.initiateChessComponent(model);
@@ -67,15 +81,15 @@ public class GameController implements GameListener {
             view.TurnStatusButton.setText(String.format("Turn %d : Player Blue",count));
         else
             view.TurnStatusButton.setText(String.format("Turn %d : Player Red",count));
-        }
-
-
+    }
+    }
 
     public void loading() {
         try (BufferedReader br = new BufferedReader(new FileReader("save.txt"))) {
             String line;
             int num = 0;
             while ((line = br.readLine()) != null) {
+
                 Pattern pattern = Pattern.compile("\\d+");
                 java.util.regex.Matcher matcher = pattern.matcher(line);
                 int counts = 0;
@@ -92,6 +106,7 @@ public class GameController implements GameListener {
                 Step step = new Step(src, dest, null, null, turn, null);
                 doStep(step);
                 swapColor();
+                view.repaint();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -124,22 +139,37 @@ public class GameController implements GameListener {
             model.recordStep(src, dest, count, null);
             count++;
             model.moveChessPiece(src, dest);
-            view.setChessComponentAtGrid(dest, view.removeChessComponentAtGrid(src));
-            view.repaint();
+            if (view != null) {
+                view.setChessComponentAtGrid(dest, view.removeChessComponentAtGrid(src));
+                view.repaint();
+            }
+            if (dest.getName().equals("Trap")) {
+                if (dest.getPlayerColor() != model.getChessPieceOwner(dest)) {
+                    model.getChessPieceAt(dest).setRank(0);
+                }
+            }
         } else if (model.isValidCapture(src, dest)) {
             AnimalChessComponent chessComponent = (AnimalChessComponent) view.getGridComponentAt(dest).getComponents()[0];
             model.recordStep(src, dest, count, chessComponent);
             model.captureChessPiece(src, dest);
-            view.removeChessComponentAtGrid(dest);
-            view.repaint();
-            view.setChessComponentAtGrid(dest, view.removeChessComponentAtGrid(src));
-            view.repaint();
-            view.repaint();
+            if (view != null) {
+                view.removeChessComponentAtGrid(dest);
+                view.repaint();
+                view.setChessComponentAtGrid(dest, view.removeChessComponentAtGrid(src));
+                view.repaint();
+                view.repaint();
+            }
             count++;
+            if (dest.getName().equals("Trap")) {
+                if (dest.getPlayerColor() != model.getChessPieceOwner(dest)) {
+                    model.getChessPieceAt(dest).setRank(0);
+                }
+            }
         } else {
             throw new IllegalArgumentException("Illegal chess move!");
         }
     }
+
 
     public void undo() {
         if (count <= 2) {
@@ -151,21 +181,29 @@ public class GameController implements GameListener {
             ChessboardPoint dest = step.getTo();
             if (step.getCapturedChessPiece() == null) {
                 model.moveChessPiece(dest, src);
-                view.setChessComponentAtGrid(src, view.removeChessComponentAtGrid(dest));
-                view.repaint();
+                if (view != null) {
+                    view.setChessComponentAtGrid(src, view.removeChessComponentAtGrid(dest));
+                    view.repaint();
+                }
             } else if (step.getCapturedChessPiece() != null) {
                 model.moveChessPiece(dest, src);
-                view.setChessComponentAtGrid(src, view.removeChessComponentAtGrid(dest));
-                view.repaint();
+                if (view != null) {
+                    view.setChessComponentAtGrid(src, view.removeChessComponentAtGrid(dest));
+                    view.repaint();
+                }
                 model.setChessPiece(dest, step.getCapturedChessPiece());
-                view.getGridComponentAt(dest).add(step.getAcc());
-                view.repaint();
+                if (view != null) {
+                    view.getGridComponentAt(dest).add(step.getAcc());
+                    view.repaint();
+                }
             } else {
                 throw new IllegalArgumentException("Illegal chess move!");
             }
             count--;
             swapColor();
-            view.repaint();
+            if (view != null) {
+                view.repaint();
+            }
             SharedData.stepList.remove(count - 1);
 
         }
@@ -181,21 +219,53 @@ public class GameController implements GameListener {
         SharedData.stepList.clear();
     }
 
-    private boolean win() {
+    public boolean JudgeWin(Chessboard model) {
         // TODO: Check the board if there is a winner
-        if (model.getChessPieceAt(new ChessboardPoint(0, 3)).getOwner().equals(PlayerColor.RED)
-                || model.getChessPieceAt(new ChessboardPoint(8, 3)).getOwner().equals(PlayerColor.BLUE)) {
-            return true;
+        if (model.getChessPieceAt(new ChessboardPoint(0, 3)) != null) {
+            if (model.getChessPieceAt(new ChessboardPoint(0, 3)).getOwner().equals(PlayerColor.RED)
+            ) {
+                return true;
+            }
         }
-        return false;
+        if (model.getChessPieceAt(new ChessboardPoint(8, 3)) != null) {
+            if (model.getChessPieceAt(new ChessboardPoint(8, 3)).getOwner().equals(PlayerColor.BLUE)) {
+                return true;
+            }
+        }
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 7; j++) {
+                if (model.getChessPieceAt(new ChessboardPoint(i, j)) != null) {
+                    if (model.getChessPieceOwner(new ChessboardPoint(i, j)).equals(currentPlayer)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    public void AIPlay1() {
+        ai.AIPlay_1();
+        swapColor();
+    }
+
+    public void AIPlay0() {
+        ai.AIPlay_0();
+        swapColor();
+    }
+
+    public void AIPlay2() {
+
+        ai.AIPlay_2();
+        swapColor();
     }
 
     // click an empty cell
     @Override
-    public void onPlayerClickCell(ChessboardPoint point, CellColorView component) {
+    public void onPlayerClickCell(ChessboardPoint point, CellComponent component) {
         possibleMovePoints = null;
         setCanStepFalse();
-        if (selectedPoint != null && model.isValidMove(selectedPoint, point) || model.isNull(point)) {
+    if (selectedPoint != null && model.isValidMove(selectedPoint, point) || model.isNull(point)) {
             if (point.getName().equals("Den") &&
                     ((this.currentPlayer.equals(PlayerColor.BLUE) && point.getRow() < 3)
                             || (this.currentPlayer.equals(PlayerColor.RED) && point.getRow() > 6))) {
@@ -231,23 +301,12 @@ public class GameController implements GameListener {
                 possibleMovePoints = getAndSetIsValidMovePoints(point);
                 possibleMovePoints = new ArrayList<>(getAndSetIsValidMovePoints(point));
                 selectedPoint = point;
+                model.findPossibleStep(point);
                 component.setSelected(true);
                 component.revalidate();
                 component.repaint();
                 view.repaint();
                 view.revalidate();
-
-
-//
-//                selectedPoint = point;
-//                component.setSelected(true);
-//                component.repaint();
-
-
-
-
-//显示possible ste
-
             }
         } else if (selectedPoint.equals(point)) {
             selectedPoint = null;
@@ -267,43 +326,44 @@ public class GameController implements GameListener {
 
             view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
             selectedPoint = null;
+
             swapColor();
             view.repaint();
             if (point.getName().equals("Trap") && ((this.currentPlayer.equals(PlayerColor.BLUE) && point.getRow() < 3)
                     || (this.currentPlayer.equals(PlayerColor.RED) && point.getRow() > 6))) {
                 this.model.getChessPieceAt(point).setRank(0);
             }
-        }
-    }
 
-    public ArrayList<ChessboardPoint> getAndSetIsValidMovePoints(ChessboardPoint sourcePoint) {
-        ArrayList<ChessboardPoint> validMovePointsList = new ArrayList<>();
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 7; j++) {
-                ChessboardPoint destPoint = new ChessboardPoint(i, j);
-                if (model.isValidMove(sourcePoint, destPoint)) {
-                    view.gridComponents[i][j].canStep = true;
-                    validMovePointsList.add(destPoint);
+            public ArrayList<ChessboardPoint> getAndSetIsValidMovePoints(ChessboardPoint sourcePoint) {
+                ArrayList<ChessboardPoint> validMovePointsList = new ArrayList<>();
+                for (int i = 0; i < 9; i++) {
+                    for (int j = 0; j < 7; j++) {
+                        ChessboardPoint destPoint = new ChessboardPoint(i, j);
+                        if (model.isValidMove(sourcePoint, destPoint)) {
+                            view.gridComponents[i][j].canStep = true;
+                            validMovePointsList.add(destPoint);
+                        }
+                        if (model.isValidCapture(sourcePoint, destPoint)) {
+                            view.gridComponents[i][j].canStep = true;
+                            validMovePointsList.add(destPoint);
+                        }
+                    }
                 }
-                if (model.isValidCapture(sourcePoint, destPoint)) {
-                    view.gridComponents[i][j].canStep = true;
-                    validMovePointsList.add(destPoint);
-                }
+                return validMovePointsList;
             }
-        }
-        return validMovePointsList;
-    }
 
 //5.11写：
 
 
 
 
-    //将每个Cell的canstep状态设为不可以
-    public void setCanStepFalse() {
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 7; j++) {
-                view.gridComponents[i][j].canStep = false;
+            //将每个Cell的canstep状态设为不可以
+            public void setCanStepFalse() {
+                for (int i = 0; i < 9; i++) {
+                    for (int j = 0; j < 7; j++) {
+                        view.gridComponents[i][j].canStep = false;
+                    }
+                }
             }
         }
     }
