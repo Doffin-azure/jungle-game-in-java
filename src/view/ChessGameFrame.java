@@ -10,6 +10,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+
+
+
+
 /**
  * 这个类表示游戏过程中的整个游戏界面，是一切的载体
  */
@@ -128,48 +132,60 @@ public class ChessGameFrame extends JFrame {
 
     private void addSaveButton() {
         JButton button = new JButton("Save");
-        button.setLocation(HEIGHT, HEIGHT / 10 + 10);
+        button.setLocation(HEIGHT, HEIGHT / 10 + 40);
         button.setSize(160, 40);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
+        button.addActionListener(e -> {
+            System.out.println("Click save");
+            gameController.Save();
+        });
+
     }
+
     private void addLoadButton() {
         JButton button = new JButton("Load");
-        button.setLocation(HEIGHT, HEIGHT / 10 + 70);
+        button.setLocation(HEIGHT, HEIGHT / 10 + 100);
         button.setSize(160, 40);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
 
         button.addActionListener(e -> {
             System.out.println("Click load");
-            String path = JOptionPane.showInputDialog(this,"Input Path here");
-//            gameController.loadGameFromFile(path);
+            gameController.loading();
         });
     }
     private void addPlaybackButton() {
-        JButton button = new JButton("Playback");
-        button.setLocation(HEIGHT, HEIGHT / 10 + 130 );
+        JButton button = new JButton("Restart");
+        button.setLocation(HEIGHT, HEIGHT / 10 + 160);
         button.setSize(160, 40);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
+        button.addActionListener(e -> {
+            System.out.println("Click restart");
+            gameController.restart();
+        });
     }
-
     private void addUndoButton() {
         JButton button = new JButton("Undo");
-        button.addActionListener((e) -> JOptionPane.showMessageDialog(this, "傻逼"));
-        button.setLocation(HEIGHT, HEIGHT / 10 + 190 );
+        button.addActionListener((e) -> JOptionPane.showMessageDialog(this, "就知道你会后悔的"));
+        button.setLocation(HEIGHT, HEIGHT / 10 + 220);
         button.setSize(160, 40);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
+        button.addActionListener(e -> {
+            System.out.println("Click undo");
+            gameController.undo();
+        });
     }
 
     private void addStopButton() {
         JButton button = new JButton("Stop");
-        button.setLocation(HEIGHT, HEIGHT / 10 + 250);
+        button.setLocation(HEIGHT, HEIGHT / 10 + 280);
         button.setSize(160, 40);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
-        button.addActionListener((e) -> JOptionPane.showMessageDialog(this, "我是傻逼傻逼吗"));
+        button.addActionListener((e) -> JOptionPane.showMessageDialog(this, "游戏已经暂停"));
     }
     private void addRestartButton() {
         JButton button = new JButton("Restart");
@@ -199,6 +215,18 @@ public class ChessGameFrame extends JFrame {
     }
 
 
+
+    private void addAIButton() {
+        JButton button = new JButton("AI");
+        button.setLocation(HEIGHT - 100, HEIGHT / 10 + 400);
+        button.setSize(160, 40);
+        button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(button);
+        button.addActionListener(e -> {
+            System.out.println("Click AI");
+//            gameController.AIPlay2();
+        });
+    }
     private void addAccountButton() {
         JButton button = new JButton("Account");
         button.setLocation(HEIGHT, HEIGHT / 10 + 430);
