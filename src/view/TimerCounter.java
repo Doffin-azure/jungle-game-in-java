@@ -14,29 +14,29 @@ public class TimerCounter extends Thread{
         synchronized (this){
             while(true){
                 PlayerColor player = gameController.currentPlayer;
-                boolean b = true;
                 while(timeOfThisTurn > 0){
                     timeOfThisTurn--;
                     try{
                         Thread.sleep(1000);
                         gameController.TimerCounterButton.setText("Time Remained:"+timeOfThisTurn);
-                        if(gameController.currentPlayer != player){
+                        if(timeOfThisTurn == 0){
                             gameController.swapColor();
-                            b = false;
-                            break;
+                            gameController.setCount(gameController.getCount()+1);
                         }
                     }catch (InterruptedException e){
                         e.printStackTrace();
                     }
                 }
                 timeOfThisTurn = 30;
-
-                if(b){
-                    ///controller.swapColor();
-                    ///AI接口
-                }
-
             }
         }
+    }
+
+    public static int getTimeOfThisTurn() {
+        return timeOfThisTurn;
+    }
+
+    public static void setTimeOfThisTurn(int timeOfThisTurn) {
+        TimerCounter.timeOfThisTurn = timeOfThisTurn;
     }
 }

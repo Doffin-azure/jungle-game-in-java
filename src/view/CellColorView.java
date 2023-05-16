@@ -20,6 +20,8 @@ public class CellColorView extends JPanel {
     public boolean mouseSuspendedAt;
 
     public boolean isRiver=false;
+    public boolean isTrap=false;
+    public boolean isDen=false;
 
     public CellColorView(Color background, Point location, int size) {
         this.size=size;
@@ -54,9 +56,23 @@ public class CellColorView extends JPanel {
             ImageIcon gifImage = new ImageIcon("resource/Animal Supporter Asset Pack/Flowing River/R.gif");
             g.fillOval(0,0 ,getWidth(), getWidth());
             g.drawImage(gifImage.getImage(),1,1,getWidth()-1,getHeight()-1, this);
-
-
         }
+
+        //用于设置陷阱gif
+        if(isTrap){
+            ImageIcon gifImage = new ImageIcon("resource/Animal Supporter Asset Pack/Amazing BlackHole/R.gif");
+            g.fillOval(0,0 ,getWidth(), getWidth());
+            g.drawImage(gifImage.getImage(),1,1,getWidth()-1,getHeight()-1, this);
+        }
+
+        //用于设置洞穴gif
+        if(isDen){
+            ImageIcon gifImage = new ImageIcon("resource/Animal Supporter Asset Pack/Amazing Cave/R.gif");
+            g.fillOval(0,0 ,getWidth(), getWidth());
+            g.drawImage(gifImage.getImage(),1,1,getWidth()-1,getHeight()-1, this);
+        }
+
+
         if (canStep) { // Highlights the possible move model if selected.
             Graphics2D g2d = (Graphics2D) g;
             g2d.setColor(new Color(87, 135, 255, 150));
@@ -65,17 +81,5 @@ public class CellColorView extends JPanel {
             g2d.fill(roundedRectangle);
         }
 
-//        点击
-//        if (mouseAt) {
-//            Graphics2D g2d = (Graphics2D) g;
-//            g2d.setColor(new Color(255, 172, 155, 120));
-//            RoundRectangle2D roundedRectangle = new RoundRectangle2D.Double(1, 1,
-//                    this.getWidth() - 1, this.getHeight() - 1, size / 4, size / 4);
-
-
     }
-
-
-
-
 }

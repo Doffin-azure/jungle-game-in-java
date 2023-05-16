@@ -82,6 +82,7 @@ public class Chessboard {
 
     public void moveChessPiece(ChessboardPoint src, ChessboardPoint dest) {
         if (!isValidMove(src, dest)) {
+            JOptionPane.showMessageDialog(null, "非法移动！", "移动失败", JOptionPane.ERROR_MESSAGE);
             throw new IllegalArgumentException("Illegal chess move!");
         }
         if (isNull(dest)) {
@@ -91,6 +92,7 @@ public class Chessboard {
 
     public void captureChessPiece(ChessboardPoint src, ChessboardPoint dest) {
         if (!isValidCapture(src, dest)) {
+            JOptionPane.showMessageDialog(null, "无法捕捉！", "移动失败", JOptionPane.ERROR_MESSAGE);
             throw new IllegalArgumentException("Illegal chess capture!");
         }
         removeChessPiece(dest);

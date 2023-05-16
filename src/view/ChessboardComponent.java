@@ -112,9 +112,11 @@ public class ChessboardComponent extends JComponent {
                     this.add(cell);
                 } else if (trapCell.contains(temp)) {
                     cell = new CellColorView(Brown, calculatePoint(i, j), CHESS_SIZE);
+                    cell.isTrap = true;
                     this.add(cell);
                 } else if (densCell.contains(temp)) {
                     cell = new CellColorView(Yellow, calculatePoint(i, j), CHESS_SIZE);
+                    cell.isDen = true;
                     this.add(cell);
                 } else {
                     cell = new CellColorView(Color.LIGHT_GRAY, calculatePoint(i, j), CHESS_SIZE);
