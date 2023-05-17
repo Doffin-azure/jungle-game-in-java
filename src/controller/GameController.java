@@ -294,11 +294,16 @@ public class GameController implements GameListener {
     public void onPlayerClickCell(ChessboardPoint point, CellColorView component) {
         possibleMovePoints = null;
         setCanStepFalse();
-        if (selectedPoint != null && model.isValidMove(selectedPoint, point) || model.isNull(point)) {
-            if (point.getName().equals("Den") &&
-                    ((this.currentPlayer.equals(PlayerColor.BLUE) && point.getRow() < 3)
-                            || (this.currentPlayer.equals(PlayerColor.RED) && point.getRow() > 6))) {
-            } else if(model.isValidMove(selectedPoint, point)&&selectedPoint!=null){
+        if (selectedPoint != null && model.isValidMove(selectedPoint, point) || model.isNull(point)) {//如果刚刚选有棋子且（空cell可以移动）或者（point是空的）
+            if (! model.isValidMove(selectedPoint, point)){
+
+                component.revalidate();
+                component.repaint();
+                view.repaint();
+                view.revalidate();
+                JOptionPane.showMessageDialog(null, "Invalid Move!");
+            }
+            else if(model.isValidMove(selectedPoint, point)&&selectedPoint!=null){//如果是合法移动
                 model.recordStep(selectedPoint, point, count, null);
                 count++;
                 model.moveChessPiece(selectedPoint, point);
@@ -318,7 +323,7 @@ public class GameController implements GameListener {
                     VictoryDialog a = new VictoryDialog();
                     VictoryDialog.displayWinning(winner, a);
                 }// finish the game if the chess enter the Den
-            } // finish the game
+            }// finish the game
         }
         if(this.currentPlayer.equals(PlayerColor.RED)){
             AIPlayIntegrated(getAiStatus());
@@ -350,7 +355,8 @@ public class GameController implements GameListener {
             view.repaint();
             view.revalidate();
         }
-        else if (!model.isNull(point)) {if(model.isValidCapture(selectedPoint, point)){
+        else if (!model.isNull(point)) {
+            if(model.isValidCapture(selectedPoint, point)){
             possibleMovePoints = null;
             setCanStepFalse();
             AnimalChessComponent chessComponent = (AnimalChessComponent) view.getGridComponentAt(point).getComponents()[0];
@@ -361,6 +367,7 @@ public class GameController implements GameListener {
             view.removeChessComponentAtGrid(point);
             view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
             selectedPoint = null;
+
 
             swapColor();
             view.repaint();

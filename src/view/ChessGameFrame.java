@@ -368,19 +368,6 @@ public class ChessGameFrame extends JFrame {
     }
 
 
-    public String getModeString(){
-        int temp = this.gameController.getAiStatus();
-        if(temp == 0){
-            return "AI - Easy";
-        }else if(temp == 1){
-            return "AI - Medium";
-        }else if(temp == 2) {
-            return "AI - Hard";
-        }else {
-            return "General";
-        }
-    }
-
 
 
 }

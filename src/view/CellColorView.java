@@ -67,7 +67,7 @@ public class CellColorView extends JPanel {
 
         //用于设置洞穴gif
         if(isDen){
-            ImageIcon gifImage = new ImageIcon("resource/Animal Supporter Asset Pack/Amazing Cave/R.gif");
+            ImageIcon gifImage = new ImageIcon("resource/Animal Supporter Asset Pack/Amazing Cave/R2.gif");
             g.fillOval(0,0 ,getWidth(), getWidth());
             g.drawImage(gifImage.getImage(),1,1,getWidth()-1,getHeight()-1, this);
         }
