@@ -22,7 +22,6 @@ import java.util.ArrayList;
 public class GameController implements GameListener {
 
 
-
     public void setAi(AI ai) {
         this.ai = ai;
     }
@@ -36,7 +35,7 @@ public class GameController implements GameListener {
     private Chessboard model;
     private ChessboardComponent view;
     public JButton TimerCounterButton;
-    public  TimerCounter timerCounter;
+    public TimerCounter timerCounter;
     public ArrayList<ChessboardPoint> possibleMovePoints;
     // Record whether there is a selected piece before
     private ChessboardPoint selectedPoint;
@@ -81,51 +80,89 @@ public class GameController implements GameListener {
     // after a valid move swap the player
     public void swapColor() {
         currentPlayer = currentPlayer == PlayerColor.BLUE ? PlayerColor.RED : PlayerColor.BLUE;
-        if (currentPlayer == PlayerColor.BLUE){
+        if (currentPlayer == PlayerColor.BLUE) {
             view.TurnStatusButton.setText(String.format("Turn %d : Player Blue", count));
             TimerCounter.timeOfThisTurn = 30;
-            view.TimerCounterButton.setText(String.format("Time Remained: %d ",TimerCounter.getTimeOfThisTurn()));
-        }
-            else
+            view.TimerCounterButton.setText(String.format("Time Remained: %d ", TimerCounter.getTimeOfThisTurn()));
+        } else
             view.TurnStatusButton.setText(String.format("Turn %d : Player Red", count));
-            TimerCounter.timeOfThisTurn = 30;
-            view.TimerCounterButton.setText(String.format("Time Remained: %d ",TimerCounter.getTimeOfThisTurn()));
+        TimerCounter.timeOfThisTurn = 30;
+        view.TimerCounterButton.setText(String.format("Time Remained: %d ", TimerCounter.getTimeOfThisTurn()));
     }
 
 
-    public void loading() {
-        try (BufferedReader br = new BufferedReader(new FileReader("save.txt"))) {
+    public Boolean loading(String name) {
+        String[] title = name.split("\\.");
+        if (!title[1].equals("txt")) {
+            System.out.println("错误编码: 101");
+            return false;
+        }
+        String PathName = "resource\\save\\" + name;
+        try (BufferedReader br = new BufferedReader(new FileReader(PathName))) {
             String line;
             int num = 0;
             while ((line = br.readLine()) != null) {
 
                 Pattern pattern = Pattern.compile("\\d+");
+                Pattern pattern1 = Pattern.compile("(?<==')[^']+(?=')");
                 java.util.regex.Matcher matcher = pattern.matcher(line);
+                java.util.regex.Matcher matcher1 = pattern1.matcher(line);
                 int counts = 0;
                 int[] arr = new int[5];
+                String[] arr1 = new String[2];
                 while (matcher.find() && counts < 4) {
                     arr[counts] = Integer.parseInt(matcher.group());
                     counts++;
                 }
+                counts = 0;
+                while (matcher1.find() && counts < 2) {
+                    arr1[counts] = matcher1.group();
+                    counts++;
+                }
                 num++;
                 arr[4] = num;
+                if (arr[0] > 6 || arr[0] < 0 || arr[1] > 8 || arr[1] < 0 || arr[2] > 6 || arr[2] < 0 || arr[3] > 8 || arr[3] < 0) {
+                    JOptionPane.showMessageDialog(null, "棋盘错误，错误编码:102", "Error", JOptionPane.ERROR_MESSAGE);
+                    break;
+                }
                 ChessboardPoint src = new ChessboardPoint(arr[0], arr[1]);
                 ChessboardPoint dest = new ChessboardPoint(arr[2], arr[3]);
                 int turn = arr[4];
-                Step step = new Step(src, dest, null, null, turn, null);
-                doStep(step);
-                swapColor();
-                view.repaint();
+
+                if (model.getChessPieceAt(src).getName().equals(arr1[0]) && (model.getChessPieceAt(dest) == null || model.getChessPieceAt(dest).getName().equals(arr1[1]))) {
+                    if (!model.isNull(dest)) {
+                        if (model.isValidCapture(src, dest) == false) {
+                            JOptionPane.showMessageDialog(null, "行棋步骤错误，错误编码:105", "Error", JOptionPane.ERROR_MESSAGE);
+                            break;
+                        }
+                    }
+                    if (model.isValidMove(src, dest) == false) {
+                        JOptionPane.showMessageDialog(null, "行棋步骤错误，错误编码:105", "Error", JOptionPane.ERROR_MESSAGE);
+                        break;
+                    }
+                    Step step = new Step(src, dest, null, null, turn, null);
+                    doStep(step);
+                    swapColor();
+                    view.paintImmediately(0, 0, view.getHeight(), view.getWidth());
+
+
+                } else {
+                    JOptionPane.showMessageDialog(null, "棋子错误，错误编码:103", "Error", JOptionPane.ERROR_MESSAGE);
+                    break;
+                }
+
+
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         view.repaint();
+        return true;
     }
 
-    public void Save() {
-
-        File file = new File("save.txt");
+    public void Save(String Path) {
+        String PathName = "resource\\save\\" + Path;
+        File file = new File(PathName);
         try {
             FileWriter fw = new FileWriter(file);
             BufferedWriter bw = new BufferedWriter(fw);
@@ -144,13 +181,17 @@ public class GameController implements GameListener {
         ChessboardPoint src = step.getFrom();
         ChessboardPoint dest = step.getTo();
         if (model.isNull(dest)) {
-
             model.recordStep(src, dest, count, null);
             count++;
             model.moveChessPiece(src, dest);
             if (view != null) {
                 view.setChessComponentAtGrid(dest, view.removeChessComponentAtGrid(src));
-                view.repaint();
+                try {
+                    Thread.sleep(250);
+                    view.paintImmediately(0, 0, view.getWidth(), view.getHeight());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
             if (dest.getName().equals("Trap")) {
                 if (dest.getPlayerColor() != model.getChessPieceOwner(dest)) {
@@ -165,8 +206,33 @@ public class GameController implements GameListener {
                 view.removeChessComponentAtGrid(dest);
                 view.repaint();
                 view.setChessComponentAtGrid(dest, view.removeChessComponentAtGrid(src));
+                try {
+                    Thread.sleep(250);
+                    view.paintImmediately(0, 0, view.getWidth(), view.getHeight());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            count++;
+            if (dest.getName().equals("Trap")) {
+                if (dest.getPlayerColor() != model.getChessPieceOwner(dest)) {
+                    model.getChessPieceAt(dest).setRank(0);
+                }
+            }
+        } else if (model.isValidCapture(src, dest)) {
+            AnimalChessComponent chessComponent = (AnimalChessComponent) view.getGridComponentAt(dest).getComponents()[0];
+            model.recordStep(src, dest, count, chessComponent);
+            model.captureChessPiece(src, dest);
+            if (view != null) {
+                view.removeChessComponentAtGrid(dest);
                 view.repaint();
-                view.repaint();
+                view.setChessComponentAtGrid(dest, view.removeChessComponentAtGrid(src));
+                try {
+                    Thread.sleep(250);
+                    view.paintImmediately(0, 0, view.getWidth(), view.getHeight());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
             count++;
             if (dest.getName().equals("Trap")) {
@@ -220,13 +286,13 @@ public class GameController implements GameListener {
 
     public void restart() {
         model.restart();
-        TimerCounter.timeOfThisTurn= 30;
+        TimerCounter.timeOfThisTurn = 30;
         view.initiateChessComponent(model);
         view.repaint();
         this.currentPlayer = PlayerColor.BLUE;
         this.selectedPoint = null;
         this.count = 1;
-        view.TimerCounterButton.setText(String.format("Time Remained: %d ",TimerCounter.getTimeOfThisTurn()));
+        view.TimerCounterButton.setText(String.format("Time Remained: %d ", TimerCounter.getTimeOfThisTurn()));
         view.TurnStatusButton.setText(String.format("Turn %d : Player Red", count));
         SharedData.stepList.clear();
     }
@@ -256,8 +322,8 @@ public class GameController implements GameListener {
         return true;
     }
 
-    public void AIPlayIntegrated(int aiStatus){//整合所有ai方法
-        switch (aiStatus){
+    public void AIPlayIntegrated(int aiStatus) {//整合所有ai方法
+        switch (aiStatus) {
             case 0:
                 ai.AIPlay_0();
                 swapColor();
@@ -295,15 +361,17 @@ public class GameController implements GameListener {
         possibleMovePoints = null;
         setCanStepFalse();
         if (selectedPoint != null && model.isValidMove(selectedPoint, point) || model.isNull(point)) {//如果刚刚选有棋子且（空cell可以移动）或者（point是空的）
-            if (! model.isValidMove(selectedPoint, point)){
+            if (!model.isValidMove(selectedPoint, point)) {
 
                 component.revalidate();
                 component.repaint();
                 view.repaint();
                 view.revalidate();
                 JOptionPane.showMessageDialog(null, "Invalid Move!");
-            }
-            else if(model.isValidMove(selectedPoint, point)&&selectedPoint!=null){//如果是合法移动
+            } else if (model.isValidMove(selectedPoint, point) && selectedPoint != null) {//如果是合法移动 else if (model.isValidMove(selectedPoint, point) && selectedPoint != null) {
+                if (model.isValidMove(selectedPoint, point) == false) {
+                    JOptionPane.showMessageDialog(null, "行棋步骤错误，错误编码:105", "Error", JOptionPane.ERROR_MESSAGE);
+                }
                 model.recordStep(selectedPoint, point, count, null);
                 count++;
                 model.moveChessPiece(selectedPoint, point);
@@ -323,9 +391,9 @@ public class GameController implements GameListener {
                     VictoryDialog a = new VictoryDialog();
                     VictoryDialog.displayWinning(winner, a);
                 }// finish the game if the chess enter the Den
-            }// finish the game
+            } // finish the game
         }
-        if(this.currentPlayer.equals(PlayerColor.RED)){
+        if (this.currentPlayer.equals(PlayerColor.RED)) {
             AIPlayIntegrated(getAiStatus());
         }
     }
@@ -345,8 +413,7 @@ public class GameController implements GameListener {
                 view.repaint();
                 view.revalidate();
             }
-        }
-        else if (selectedPoint.equals(point)) {//click the same chess again and cancel selection
+        } else if (selectedPoint.equals(point)) {//click the same chess again and cancel selection
             selectedPoint = null;
             possibleMovePoints = null;
             setCanStepFalse();
@@ -354,29 +421,31 @@ public class GameController implements GameListener {
             component.repaint();
             view.repaint();
             view.revalidate();
-        }
-        else if (!model.isNull(point)) {
-            if(model.isValidCapture(selectedPoint, point)){
-            possibleMovePoints = null;
-            setCanStepFalse();
-            AnimalChessComponent chessComponent = (AnimalChessComponent) view.getGridComponentAt(point).getComponents()[0];
-            model.recordStep(selectedPoint, point, count, chessComponent);
-            count++;
-            model.captureChessPiece(selectedPoint, point);
-            new BGMofClick().PlayClickBGM("resource/Music/tear.wav");
-            view.removeChessComponentAtGrid(point);
-            view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
-            selectedPoint = null;
+        } else if (!model.isNull(point)) {
+            if (model.isValidCapture(selectedPoint, point)) {
+                possibleMovePoints = null;
+                setCanStepFalse();
+                AnimalChessComponent chessComponent = (AnimalChessComponent) view.getGridComponentAt(point).getComponents()[0];
+                model.recordStep(selectedPoint, point, count, chessComponent);
+                count++;
+                model.captureChessPiece(selectedPoint, point);
+                new BGMofClick().PlayClickBGM("resource/Music/tear.wav");
+                view.removeChessComponentAtGrid(point);
+                view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
+                selectedPoint = null;
 
+                swapColor();
+                view.repaint();
+                if (point.getName().equals("Trap") && ((this.currentPlayer.equals(PlayerColor.BLUE) && point.getRow() < 3)
+                        || (this.currentPlayer.equals(PlayerColor.RED) && point.getRow() > 6))) {
+                    this.model.getChessPieceAt(point).setRank(0);
+                }
+            }
+        } else {
 
-            swapColor();
-            view.repaint();
-            if (point.getName().equals("Trap") && ((this.currentPlayer.equals(PlayerColor.BLUE) && point.getRow() < 3)
-                    || (this.currentPlayer.equals(PlayerColor.RED) && point.getRow() > 6))) {
-                this.model.getChessPieceAt(point).setRank(0);
-            }}
+            JOptionPane.showMessageDialog(null, "行棋步骤错误，错误编码:105", "Error", JOptionPane.ERROR_MESSAGE);
         }
-        if(this.currentPlayer.equals(PlayerColor.RED)){
+        if (this.currentPlayer.equals(PlayerColor.RED)) {
             AIPlayIntegrated(getAiStatus());
         }
     }
@@ -390,27 +459,28 @@ public class GameController implements GameListener {
                 ChessboardPoint destPoint = new ChessboardPoint(i, j);
                 if (model.isValidMove(sourcePoint, destPoint)) {
                     //仅限于地图上的性质是否可以移动
-                    if(!model.isNull(destPoint)){
-                    if(!model.isValidCapture(sourcePoint,destPoint)){
-                        continue;
-                    }}
+                    if (!model.isNull(destPoint)) {
+                        if (!model.isValidCapture(sourcePoint, destPoint)) {
+                            continue;
+                        }
+                    }
                     view.gridComponents[i][j].canStep = true;
                     validMovePointsList.add(destPoint);
                 }
             }
         }
-            return validMovePointsList;
+        return validMovePointsList;
 
     }
 
     //将每个Cell的canstep状态设为不可以
     public void setCanStepFalse() {
-            for (int i = 0; i < 9; i++) {
-                for (int j = 0; j < 7; j++) {
-                    view.gridComponents[i][j].canStep = false;
-                }
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 7; j++) {
+                view.gridComponents[i][j].canStep = false;
             }
         }
+    }
 
     public int getAiStatus() {
         return aiStatus;

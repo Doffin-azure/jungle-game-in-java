@@ -1,5 +1,6 @@
 package view;
 //CellComponent 改名为 CellColorView
+
 import model.ChessboardPoint;
 import model.SharedData;
 
@@ -19,13 +20,13 @@ public class CellColorView extends JPanel {
     public boolean canStep;
     public boolean mouseSuspendedAt;
 
-    public boolean isRiver=false;
-    public boolean isTrap=false;
-    public boolean isDen=false;
+    public boolean isRiver = false;
+    public boolean isTrap = false;
+    public boolean isDen = false;
 
     public CellColorView(Color background, Point location, int size) {
-        this.size=size;
-        setLayout(new GridLayout(1,1));
+        this.size = size;
+        setLayout(new GridLayout(1, 1));
         setLocation(location);
         setSize(size, size);
         this.background = background;
@@ -42,34 +43,33 @@ public class CellColorView extends JPanel {
 //鼠标点击IsValidMove和划过显示
 
 
-
-        if(mouseSuspendedAt){//Highlights the cell if the mouse is suspended on it
+        if (mouseSuspendedAt) {//Highlights the cell if the mouse is suspended on it
             Graphics2D g2d = (Graphics2D) g;
             g2d.setColor(new Color(255, 172, 155, 120));//颜色与上面不同
             //普通矩形美化成为圆角矩形
-            RoundRectangle2D roundedRectangle = new RoundRectangle2D.Double(1, 1, this.getWidth() - 1, this.getHeight() - 1, size/2 , size/2 );
+            RoundRectangle2D roundedRectangle = new RoundRectangle2D.Double(1, 1, this.getWidth() - 1, this.getHeight() - 1, size / 2, size / 2);
             g2d.fill(roundedRectangle);
         }
 
-       //用于设置河流gif
-        if(isRiver){
+        //用于设置河流gif
+        if (isRiver) {
             ImageIcon gifImage = new ImageIcon("resource/Animal Supporter Asset Pack/Flowing River/R.gif");
-            g.fillOval(0,0 ,getWidth(), getWidth());
-            g.drawImage(gifImage.getImage(),1,1,getWidth()-1,getHeight()-1, this);
+            g.fillOval(0, 0, getWidth(), getWidth());
+            g.drawImage(gifImage.getImage(), 1, 1, getWidth() - 1, getHeight() - 1, this);
         }
 
         //用于设置陷阱gif
-        if(isTrap){
+        if (isTrap) {
             ImageIcon gifImage = new ImageIcon("resource/Animal Supporter Asset Pack/Amazing BlackHole/R.gif");
-            g.fillOval(0,0 ,getWidth(), getWidth());
-            g.drawImage(gifImage.getImage(),1,1,getWidth()-1,getHeight()-1, this);
+            g.fillOval(0, 0, getWidth(), getWidth());
+            g.drawImage(gifImage.getImage(), 1, 1, getWidth() - 1, getHeight() - 1, this);
         }
 
         //用于设置洞穴gif
-        if(isDen){
+        if (isDen) {
             ImageIcon gifImage = new ImageIcon("resource/Animal Supporter Asset Pack/Amazing Cave/R2.gif");
-            g.fillOval(0,0 ,getWidth(), getWidth());
-            g.drawImage(gifImage.getImage(),1,1,getWidth()-1,getHeight()-1, this);
+            g.fillOval(0, 0, getWidth(), getWidth());
+            g.drawImage(gifImage.getImage(), 1, 1, getWidth() - 1, getHeight() - 1, this);
         }
 
 
@@ -77,7 +77,7 @@ public class CellColorView extends JPanel {
             Graphics2D g2d = (Graphics2D) g;
             g2d.setColor(new Color(87, 135, 255, 150));
             //普通矩形美化成为圆角矩形
-            RoundRectangle2D roundedRectangle = new RoundRectangle2D.Double(1, 1, this.getWidth() - 1, this.getHeight() - 1, size/2 , size/2 );
+            RoundRectangle2D roundedRectangle = new RoundRectangle2D.Double(1, 1, this.getWidth() - 1, this.getHeight() - 1, size / 2, size / 2);
             g2d.fill(roundedRectangle);
         }
 
