@@ -36,6 +36,7 @@ public class FirstFrame extends JFrame {
 
         addGeneralModeButton();
         addAIModeButton();
+        addOnlineModeButton();
         addBackground();
 
     }
@@ -48,7 +49,7 @@ public class FirstFrame extends JFrame {
             gameFrame.getClock().setVisible(true);
             beginTimer();
         });
-        button.setLocation(150, 150);
+        button.setLocation(150, 110);
         button.setSize(300, 120);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
@@ -113,17 +114,72 @@ public class FirstFrame extends JFrame {
         button.addActionListener((e) -> {
             this.setVisible(false);
             SelectAIFrame.setVisible(true);
-            
+
         });
 
-        button.setLocation(150, 450);
+        button.setLocation(150, 310);
         button.setSize(300, 120);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
 
-        ChessGameFrame gameFrame = new ChessGameFrame(1100, 810);
-        this.gameFrame = gameFrame;
+    }
+    private void addOnlineModeButton() {
+        JButton button = new JButton("Online Mode ");
 
+
+        //新建一个连线模式选择框
+        JFrame SelectOnlineFrame = new JFrame();
+        SelectOnlineFrame.setTitle("Server和Client选择");
+        SelectOnlineFrame.setSize(600, 750);
+        SelectOnlineFrame.setLocationRelativeTo(null); // Center the window.
+        SelectOnlineFrame.setDefaultCloseOperation(HIDE_ON_CLOSE); //设置关闭按键
+        SelectOnlineFrame.setLayout(null);
+
+        //Server按钮
+        JButton buttonServer= new JButton("Server ");
+        buttonServer.addActionListener((e1) -> {
+            SelectOnlineFrame.setVisible(false);
+            gameFrame.gameController.setAiStatus(4);
+            gameFrame.ModeStatusButton.setText("Online Mode");
+            this.gameFrame.gameController.beginNetwork(4,"noUseString");
+            gameFrame.setVisible(true);
+            gameFrame.getClock().setVisible(true);
+            JOptionPane.showMessageDialog(null, "You are PlayerBlue");
+            beginTimer();
+        });
+        buttonServer.setLocation(150, 150);
+        buttonServer.setSize(300, 120);
+        buttonServer.setFont(new Font("Rockwell", Font.BOLD, 20));
+        SelectOnlineFrame.add(buttonServer);
+
+        //Client模式按钮
+        JButton buttonClient = new JButton("Client ");
+        buttonClient.addActionListener((e2) -> {
+            String host = JOptionPane.showInputDialog("Input Server's IP:");
+            SelectOnlineFrame.setVisible(false);
+            gameFrame.gameController.setAiStatus(5);
+            gameFrame.ModeStatusButton.setText("Online Mode");
+            this.gameFrame.gameController.beginNetwork(5,host);
+            gameFrame.setVisible(true);
+            gameFrame.getClock().setVisible(true);
+            JOptionPane.showMessageDialog(null, "You are PlayerRed");
+            beginTimer();
+        });
+        buttonClient.setLocation(150, 300);
+        buttonClient.setSize(300, 120);
+        buttonClient.setFont(new Font("Rockwell", Font.BOLD, 20));
+        SelectOnlineFrame.add(buttonClient);
+
+        button.setLocation(150, 510);
+        button.setSize(300, 120);
+        button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(button);
+
+
+        button.addActionListener((e) -> {
+            this.setVisible(false);
+            SelectOnlineFrame.setVisible(true);
+        });
     }
 
 
@@ -140,7 +196,7 @@ public class FirstFrame extends JFrame {
     }
 
     public void addBackground() {
-        Image image = new ImageIcon("resource/BackgroundPicture/space2.jpg").getImage();
+        Image image = new ImageIcon("resource/BackgroundPicture/Jungle2.jfif").getImage();
         image = image.getScaledInstance(WIDTH, HEIGHT, Image.SCALE_DEFAULT);
         ImageIcon icon = new ImageIcon(image);
         background0 = new JLabel(icon);

@@ -4,7 +4,7 @@ package model;
  * This class represents positions on the checkerboard, such as (0, 0), (0, 7), and so on
  * Where, the upper left corner is (0, 0), the lower left corner is (8, 0), the upper right corner is (0, 7), and the lower right corner is (8, 7).
  */
-public class ChessboardPoint {
+public class ChessboardPoint  implements java.io.Serializable{
     private final int row;
     private final int col;
     private final String name;

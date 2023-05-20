@@ -50,14 +50,6 @@ public class BGM implements Runnable{
                 }
             }
 
-//            while(isStop)
-//            {
-//                runningBGM.stop();
-//                Thread.sleep(1000);
-//
-//            }
-
-
         } catch (LineUnavailableException e) {
             throw new RuntimeException(e);
         } catch (UnsupportedAudioFileException e) {

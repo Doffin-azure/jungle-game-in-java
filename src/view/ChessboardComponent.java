@@ -31,10 +31,11 @@ public class ChessboardComponent extends JComponent {
     public JButton TimerCounterButton;
     public GameController gameController;
 
-    private Color Brown = new Color (165, 42, 42, 255) ;//Trap的颜色
-    private Color Yellow = new Color(255, 255, 0); ;//Den的颜色
+    private Color Brown = new Color(165, 42, 42, 255);//Trap的颜色
+    private Color Yellow = new Color(255, 255, 0);
+    ;//Den的颜色
 
-    public ChessboardComponent(int chessSize,JButton TurnStatusButton,JButton TimerCounterButton) {
+    public ChessboardComponent(int chessSize, JButton TurnStatusButton, JButton TimerCounterButton) {
         this.TurnStatusButton = TurnStatusButton;
         this.TimerCounterButton = TimerCounterButton;
         CHESS_SIZE = chessSize;
@@ -112,7 +113,7 @@ public class ChessboardComponent extends JComponent {
                     this.add(cell);
                 } else if (trapCell.contains(temp)) {
                     cell = new CellColorView(Brown, calculatePoint(i, j), CHESS_SIZE);
-                    cell.isTrap = true;
+                    cell.isTrap2 = true;
                     this.add(cell);
                 } else if (densCell.contains(temp)) {
                     cell = new CellColorView(Yellow, calculatePoint(i, j), CHESS_SIZE);
@@ -181,4 +182,7 @@ public class ChessboardComponent extends JComponent {
     }
 
 
+    public Set<ChessboardPoint> getTrapCell() {
+        return trapCell;
+    }
 }

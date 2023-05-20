@@ -1,5 +1,7 @@
 package controller;
 
+import controller.NetWork.Client;
+import controller.NetWork.Server;
 import listener.GameListener;
 import model.*;
 import view.AnimalChessComponent;
@@ -8,10 +10,18 @@ import view.Dialog.VictoryDialog;
 import view.*;
 
 import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.regex.Pattern;
 import javax.swing.*;
 import java.util.ArrayList;
 
+
+
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 /**
  * Controller is the connection between model and view,
  * when a Controller receive a request from a view, the Controller
@@ -33,7 +43,7 @@ public class GameController implements GameListener {
     }
 
     private Chessboard model;
-    private ChessboardComponent view;
+    public ChessboardComponent view;
     public JButton TimerCounterButton;
     public TimerCounter timerCounter;
     public ArrayList<ChessboardPoint> possibleMovePoints;
@@ -42,6 +52,8 @@ public class GameController implements GameListener {
     private PlayerColor winner = null;
 
     private int count = 1;
+
+    //5.17晚上局域网搭建
 
     public int getCount() {
         return count;
@@ -56,7 +68,11 @@ public class GameController implements GameListener {
     }
 
     public PlayerColor currentPlayer = PlayerColor.BLUE;
-    private int aiStatus = 3;//0_ai0, 1_ai1, 2_ai2, 3_human
+    private int aiStatus =3;//0_ai0, 1_ai1, 2_ai2, 3_human, 4_netWork_server, 5_netWork_server_client
+
+    private Server server;
+    private Client client;
+
 
     public GameController(ChessboardComponent view, Chessboard model) {
         this.view = view;
@@ -69,10 +85,20 @@ public class GameController implements GameListener {
         view.repaint();
     }
 
+    public void beginNetwork(int aiStatus,String host) {
+        if (aiStatus == 4) {
+            this.server = new Server();
+            server.startServer(8888);
+            server.receivingDataAndUpdate(this);
+        } else {
+            this.client = new Client();
+            client.connectToServer(host, 8888);
+            client.receivingDataAndUpdate(this);
+        }
+    }
     private void initialize() {
         for (int i = 0; i < Constant.CHESSBOARD_ROW_SIZE.getNum(); i++) {
             for (int j = 0; j < Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
-
             }
         }
     }
@@ -340,20 +366,6 @@ public class GameController implements GameListener {
                 break;
         }
     }
-//    public void AIPlay1() {
-//        ai.AIPlay_1();
-//        swapColor();
-//    }
-//
-//    public void AIPlay0() {
-//        ai.AIPlay_0();
-//        swapColor();
-//    }
-//
-//    public void AIPlay2() {
-//        ai.AIPlay_2();
-//        swapColor();
-//    }
 
     // click an empty cell
     @Override
@@ -375,9 +387,16 @@ public class GameController implements GameListener {
                 model.recordStep(selectedPoint, point, count, null);
                 count++;
                 model.moveChessPiece(selectedPoint, point);
+                ChessboardPoint[] sendingData = {this.selectedPoint, point};//用于传输数据，前面是srcPoint，后面是destPoint
                 possibleMovePoints = null;
                 view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
                 selectedPoint = null;
+                if(this.aiStatus ==4 && currentPlayer == PlayerColor.BLUE){//这里是服务端是蓝色，对面是红色
+                    server.sendData(sendingData);
+                }
+                if(this.aiStatus ==5 && currentPlayer == PlayerColor.RED){//这里是客户端是蓝色，对面是蓝色
+                    client.sendData(sendingData);
+                }
                 swapColor();
                 view.repaint();
                 // TODO: if the chess enter Dens or Traps and so on
@@ -422,7 +441,7 @@ public class GameController implements GameListener {
             view.repaint();
             view.revalidate();
         } else if (!model.isNull(point)) {
-            if (model.isValidCapture(selectedPoint, point)) {
+            if (model.isValidCapture(selectedPoint, point)) {// 如果能吃
                 possibleMovePoints = null;
                 setCanStepFalse();
                 AnimalChessComponent chessComponent = (AnimalChessComponent) view.getGridComponentAt(point).getComponents()[0];
@@ -430,12 +449,20 @@ public class GameController implements GameListener {
                 count++;
                 model.captureChessPiece(selectedPoint, point);
                 new BGMofClick().PlayClickBGM("resource/Music/tear.wav");
+                //zhe li!
                 view.removeChessComponentAtGrid(point);
                 view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
+                ChessboardPoint[] sendingData = {selectedPoint, point};
                 selectedPoint = null;
-
+                if(this.aiStatus ==4&& currentPlayer == PlayerColor.BLUE){//这里是服务端是蓝色，对面是红色
+                    server.sendData(sendingData);
+                }
+                if(this.aiStatus ==5 && currentPlayer == PlayerColor.RED){//这里是客户端是蓝色，对面是蓝色
+                    client.sendData(sendingData);
+                }
                 swapColor();
                 view.repaint();
+
                 if (point.getName().equals("Trap") && ((this.currentPlayer.equals(PlayerColor.BLUE) && point.getRow() < 3)
                         || (this.currentPlayer.equals(PlayerColor.RED) && point.getRow() > 6))) {
                     this.model.getChessPieceAt(point).setRank(0);
@@ -488,6 +515,18 @@ public class GameController implements GameListener {
 
     public void setAiStatus(int aiStatus) {
         this.aiStatus = aiStatus;
+    }
+
+    public void setSelectedPoint(ChessboardPoint selectedPoint) {
+        this.selectedPoint = selectedPoint;
+    }
+
+    public ChessboardComponent getView() {
+        return view;
+    }
+
+    public void setView(ChessboardComponent view) {
+        this.view = view;
     }
 }
 

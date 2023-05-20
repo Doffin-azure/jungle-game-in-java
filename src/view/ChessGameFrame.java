@@ -1,12 +1,17 @@
 package view;
 
 import controller.GameController;
+import model.ChessboardPoint;
+import model.SharedData;
 import view.Clock.clock.ClockFrame;
 import view.Dialog.LoginDialog;
 import view.Dialog.ModeDialog;
 
 import javax.swing.*;
 import java.awt.*;
+
+import static model.Constant.CHESSBOARD_COL_SIZE;
+import static model.Constant.CHESSBOARD_ROW_SIZE;
 
 
 /**
@@ -26,12 +31,9 @@ public class ChessGameFrame extends JFrame {
     JButton ModeStatusButton;
 
     public JButton turnButton;
-    private String[] backgroundPath = {"resource/BackgroundPicture/rocket.jpg",
-            "resource/BackgroundPicture/earth.png",
-            "resource/BackgroundPicture/space.jpg"
-    };//背景图片路径
-    private String[] bgmPath = {"Music/baby.wav",
-    };//bgm路径
+    private String[] backgroundPath = {"resource/BackgroundPicture/Jungle.jfif",
+            "resource/BackgroundPicture/space.jpg"};//背景图片路径
+    private String[] bgmPath = {"Music/CLDY.wav"};//bgm路径
     private final int ONE_CHESS_SIZE;
 
     private ChessboardComponent chessboardComponent;
@@ -64,19 +66,15 @@ public class ChessGameFrame extends JFrame {
         addExitButton();
         addSettingsButton();
         addModeStatusButton();
+        addRulesButton();
 
-
-//        clock.setLocationRelativeTo(this);
-        //上方按钮
 
 
         bgm = new BGM(bgmPath[0]);
         t = new Thread(bgm);
         t.start();
-        bgm.stopBGM();
 
         addBackground();
-        changBackground(backgroundPath[2]);
 
     }
 
@@ -110,7 +108,7 @@ public class ChessGameFrame extends JFrame {
 
     private void addBackground() {
 
-        Image image = new ImageIcon("resource/BackgroundPicture/rocket.jpg").getImage();
+        Image image = new ImageIcon("resource/BackgroundPicture/Jungle.jfif").getImage();
         image = image.getScaledInstance(WIDTH, HEIGHT, Image.SCALE_DEFAULT);
         ImageIcon icon = new ImageIcon(image);
         background = new JLabel(icon);
@@ -228,7 +226,7 @@ public class ChessGameFrame extends JFrame {
         button.addActionListener(e -> {
             String[] options = {"BGM", "Theme", "Clock"};
             String[] bgmOptions = {"Begin", "Close"};
-            String[] themeBackgroundOptions = {"rocket", "earth", "space"};
+            String[] themeBackgroundOptions = {"jungle", "space"};
             String[] ClockOptions = {"Clock-Visible", "Clock-invisible"};
 
             JPanel panel = new JPanel();
@@ -241,11 +239,8 @@ public class ChessGameFrame extends JFrame {
                         selectedList.addActionListener(Bgmmmmme -> {
                             switch ((String) selectedList.getSelectedItem()) {
                                 case "Begin":
-                                    bgm.stopBGM();
-                                    bgm.setBGMPath(bgmPath[0]);
                                     bgm.startBGM();
                                     break;
-
                                 case "Close":
                                     bgm.stopBGM();
                                     break;
@@ -263,14 +258,13 @@ public class ChessGameFrame extends JFrame {
                         selectedList = new JComboBox<>(themeBackgroundOptions);
                         selectedList.addActionListener(Backgrounde -> {
                             switch ((String) selectedList.getSelectedItem()) {
-                                case "rocket":
+                                case "jungle":
                                     changBackground(backgroundPath[0]);
-                                    break;
-                                case "earth":
-                                    changBackground(backgroundPath[1]);
+                                    changeDenGif(2);
                                     break;
                                 case "space":
-                                    changBackground(backgroundPath[2]);
+                                    changBackground(backgroundPath[1]);
+                                    changeDenGif(1);
                                     break;
                                 default:
                             }
@@ -324,6 +318,24 @@ public class ChessGameFrame extends JFrame {
                 System.exit(0));
     }
 
+    private void addRulesButton() {
+        JButton button = new JButton("Rules");
+        button.setLocation(HEIGHT, HEIGHT / 10 + 460);
+        button.setSize(160, 40);
+        button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(button);
+        JFrame rulesFrame = new JFrame("Rules");
+        rulesFrame.setSize(800, 600);
+        rulesFrame.setLocationRelativeTo(null);
+        rulesFrame.setDefaultCloseOperation(HIDE_ON_CLOSE);
+        ImageIcon rules = new ImageIcon("resource/BackgroundPicture/rules.png");
+        rulesFrame.add(new JLabel(rules));
+//        popup.getContentPane().add(label, BorderLayout.CENTER);
+        rulesFrame.pack();
+        button.addActionListener((e) ->
+                rulesFrame.setVisible(true));
+
+    }
 
     private void addClock() {
         clock = new ClockFrame();
@@ -353,7 +365,7 @@ public class ChessGameFrame extends JFrame {
 
     private void addModeStatusButton() {
         ModeStatusButton = new JButton("Mode: General");
-        ModeStatusButton.setLocation(HEIGHT - 70, HEIGHT / 10 + 460);
+        ModeStatusButton.setLocation(HEIGHT - 70, HEIGHT / 10 + 520);
         ModeStatusButton.setSize(300, 40);
         ModeStatusButton.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(ModeStatusButton);
@@ -384,6 +396,27 @@ public class ChessGameFrame extends JFrame {
             return "General";
         }
     }
+
+    public void changeDenGif(int type){
+        for (int i = 0; i < CHESSBOARD_ROW_SIZE.getNum(); i++) {
+            for (int j = 0; j < CHESSBOARD_COL_SIZE.getNum(); j++) {
+                ChessboardPoint temp = new ChessboardPoint(i, j);
+                if(chessboardComponent.getTrapCell().contains(temp)) {
+                    if (type == 2) {//2对应jungle
+                        chessboardComponent.gridComponents[i][j].isTrap1 = false;
+                        chessboardComponent.gridComponents[i][j].isTrap2 = true;
+                    }else if(type == 1 ){         //1对应space
+                        chessboardComponent.gridComponents[i][j].isTrap2 = false;
+                        chessboardComponent.gridComponents[i][j].isTrap1 = true;
+                    }
+                }
+            }
+        }
+
+
+    }
+//
+//}
 
 
 }

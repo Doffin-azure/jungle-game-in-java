@@ -21,7 +21,8 @@ public class CellColorView extends JPanel {
     public boolean mouseSuspendedAt;
 
     public boolean isRiver = false;
-    public boolean isTrap = false;
+    public boolean isTrap1 = false;
+    public boolean isTrap2 = false;
     public boolean isDen = false;
 
     public CellColorView(Color background, Point location, int size) {
@@ -59,12 +60,17 @@ public class CellColorView extends JPanel {
         }
 
         //用于设置陷阱gif
-        if (isTrap) {
+        if (isTrap1) {//Trap1对应space模式
             ImageIcon gifImage = new ImageIcon("resource/Animal Supporter Asset Pack/Amazing BlackHole/R.gif");
             g.fillOval(0, 0, getWidth(), getWidth());
             g.drawImage(gifImage.getImage(), 1, 1, getWidth() - 1, getHeight() - 1, this);
         }
 
+        if (isTrap2) {//Trap2对应jungle模式
+            ImageIcon gifImage = new ImageIcon("resource/Animal Supporter Asset Pack/Amazing BlackHole/R2.gif");
+            g.fillOval(0, 0, getWidth(), getWidth());
+            g.drawImage(gifImage.getImage(), 1, 1, getWidth() - 1, getHeight() - 1, this);
+        }
         //用于设置洞穴gif
         if (isDen) {
             ImageIcon gifImage = new ImageIcon("resource/Animal Supporter Asset Pack/Amazing Cave/R2.gif");
