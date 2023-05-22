@@ -109,7 +109,7 @@ public class ChessboardComponent extends JComponent {
                 CellColorView cell;
                 if (riverCell.contains(temp)) {
                     cell = new CellColorView(Color.CYAN, calculatePoint(i, j), CHESS_SIZE);
-                    cell.isRiver = true;
+                    cell.isRiver1 = true;
                     this.add(cell);
                 } else if (trapCell.contains(temp)) {
                     cell = new CellColorView(Brown, calculatePoint(i, j), CHESS_SIZE);
@@ -117,10 +117,11 @@ public class ChessboardComponent extends JComponent {
                     this.add(cell);
                 } else if (densCell.contains(temp)) {
                     cell = new CellColorView(Yellow, calculatePoint(i, j), CHESS_SIZE);
-                    cell.isDen = true;
+                    cell.isDen2 = true;
                     this.add(cell);
                 } else {
                     cell = new CellColorView(Color.LIGHT_GRAY, calculatePoint(i, j), CHESS_SIZE);
+                    cell.isGrass1 = true;
                     this.add(cell);
                 }
                 gridComponents[i][j] = cell;
@@ -184,5 +185,12 @@ public class ChessboardComponent extends JComponent {
 
     public Set<ChessboardPoint> getTrapCell() {
         return trapCell;
+    }
+
+    public Set<ChessboardPoint> getDensCell() {
+        return densCell;
+    }
+    public Set<ChessboardPoint> getRiverCell() {
+        return riverCell;
     }
 }

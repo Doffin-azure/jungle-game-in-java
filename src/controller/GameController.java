@@ -52,6 +52,7 @@ public class GameController implements GameListener {
     private PlayerColor winner = null;
 
     private int count = 1;
+    ChessGameFrame gameFrame;
 
     //5.17晚上局域网搭建
 
@@ -319,7 +320,9 @@ public class GameController implements GameListener {
         this.selectedPoint = null;
         this.count = 1;
         view.TimerCounterButton.setText(String.format("Time Remained: %d ", TimerCounter.getTimeOfThisTurn()));
-        view.TurnStatusButton.setText(String.format("Turn %d : Player Red", count));
+
+        view.TurnStatusButton.setText(String.format("Turn 1 : Player Blue"));
+//        view.TurnStatusButton.setText(String.format("Turn %d : Player Blue", count));
         SharedData.stepList.clear();
     }
 
@@ -374,11 +377,11 @@ public class GameController implements GameListener {
         setCanStepFalse();
         if (selectedPoint != null && model.isValidMove(selectedPoint, point) || model.isNull(point)) {//如果刚刚选有棋子且（空cell可以移动）或者（point是空的）
             if (!model.isValidMove(selectedPoint, point)) {
-
                 component.revalidate();
                 component.repaint();
                 view.repaint();
                 view.revalidate();
+                selectedPoint = null;
                 JOptionPane.showMessageDialog(null, "Invalid Move!");
             } else if (model.isValidMove(selectedPoint, point) && selectedPoint != null) {//如果是合法移动 else if (model.isValidMove(selectedPoint, point) && selectedPoint != null) {
                 if (model.isValidMove(selectedPoint, point) == false) {
@@ -409,6 +412,9 @@ public class GameController implements GameListener {
                     winner = currentPlayer;
                     VictoryDialog a = new VictoryDialog();
                     VictoryDialog.displayWinning(winner, a);
+                    this.restart();
+                    this.gameFrame.setVisible(false);
+                    this.gameFrame.firstFrame.setVisible(true);
                 }// finish the game if the chess enter the Den
             } // finish the game
         }
@@ -527,6 +533,10 @@ public class GameController implements GameListener {
 
     public void setView(ChessboardComponent view) {
         this.view = view;
+    }
+
+    public void setGameFrame(ChessGameFrame gameFrame) {
+        this.gameFrame = gameFrame;
     }
 }
 

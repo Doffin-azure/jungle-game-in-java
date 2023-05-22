@@ -1,6 +1,7 @@
 package view;
 
 import controller.GameController;
+import model.Chessboard;
 import model.ChessboardPoint;
 import model.SharedData;
 import view.Clock.clock.ClockFrame;
@@ -25,6 +26,7 @@ public class ChessGameFrame extends JFrame {
     private Thread t;
     public GameController gameController;
     private BGM bgm;
+    public FirstFrame firstFrame;
     JLabel background;
     JButton TurnStatusButton;
     JButton TimeCounterButton;
@@ -62,12 +64,10 @@ public class ChessGameFrame extends JFrame {
         addPlaybackButton();//这个原来是restart？
         addUndoButton();
         addSaveButton();
-        addModeButton();
         addExitButton();
         addSettingsButton();
         addModeStatusButton();
         addRulesButton();
-
 
 
         bgm = new BGM(bgmPath[0]);
@@ -192,34 +192,9 @@ public class ChessGameFrame extends JFrame {
         });
     }
 
-    private void addModeButton() {
-        JButton button = new JButton("Mode");
-        button.setLocation(HEIGHT, HEIGHT / 10 + 280);
-        button.setSize(160, 40);
-        button.setFont(new Font("Rockwell", Font.BOLD, 20));
-        add(button);
-        button.addActionListener(e -> {
-            ModeDialog modeDialog = new ModeDialog(this);
-            modeDialog.setVisible(true);
-        });
-    }
-
-    private void addAIButton() {
-        JButton button = new JButton("AI");
-        button.setLocation(HEIGHT - 100, HEIGHT / 10 + 400);
-        button.setSize(160, 40);
-        button.setFont(new Font("Rockwell", Font.BOLD, 20));
-        add(button);
-        button.addActionListener(e -> {
-            System.out.println("Click AI");
-//            gameController.AIPlay2();
-        });
-    }
-
-
     private void addSettingsButton() {
         JButton button = new JButton("Settings");
-        button.setLocation(HEIGHT, HEIGHT / 10 + 340);
+        button.setLocation(HEIGHT, HEIGHT / 10 + 280);
         button.setSize(160, 40);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
@@ -260,11 +235,11 @@ public class ChessGameFrame extends JFrame {
                             switch ((String) selectedList.getSelectedItem()) {
                                 case "jungle":
                                     changBackground(backgroundPath[0]);
-                                    changeDenGif(2);
+                                    changeDenAndTrapGif(2);
                                     break;
                                 case "space":
                                     changBackground(backgroundPath[1]);
-                                    changeDenGif(1);
+                                    changeDenAndTrapGif(1);
                                     break;
                                 default:
                             }
@@ -310,17 +285,20 @@ public class ChessGameFrame extends JFrame {
 
     private void addExitButton() {
         JButton button = new JButton("Exit");
-        button.setLocation(HEIGHT, HEIGHT / 10 + 400);
+        button.setLocation(HEIGHT, HEIGHT / 10 + 340);
         button.setSize(160, 40);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
-        button.addActionListener((e) ->
-                System.exit(0));
+        button.addActionListener((e) -> {
+            this.gameController.restart();
+            this.setVisible(false);
+            firstFrame.setVisible(true);
+        });
     }
 
     private void addRulesButton() {
         JButton button = new JButton("Rules");
-        button.setLocation(HEIGHT, HEIGHT / 10 + 460);
+        button.setLocation(HEIGHT, HEIGHT / 10 + 400);
         button.setSize(160, 40);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
@@ -365,7 +343,7 @@ public class ChessGameFrame extends JFrame {
 
     private void addModeStatusButton() {
         ModeStatusButton = new JButton("Mode: General");
-        ModeStatusButton.setLocation(HEIGHT - 70, HEIGHT / 10 + 520);
+        ModeStatusButton.setLocation(HEIGHT - 70, HEIGHT / 10 + 460);
         ModeStatusButton.setSize(300, 40);
         ModeStatusButton.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(ModeStatusButton);
@@ -397,29 +375,64 @@ public class ChessGameFrame extends JFrame {
         }
     }
 
-    public void changeDenGif(int type){
+    public void changeDenAndTrapGif(int type) {
         for (int i = 0; i < CHESSBOARD_ROW_SIZE.getNum(); i++) {
             for (int j = 0; j < CHESSBOARD_COL_SIZE.getNum(); j++) {
                 ChessboardPoint temp = new ChessboardPoint(i, j);
-                if(chessboardComponent.getTrapCell().contains(temp)) {
+
+                if (chessboardComponent.getTrapCell().contains(temp)) {
                     if (type == 2) {//2对应jungle
                         chessboardComponent.gridComponents[i][j].isTrap1 = false;
                         chessboardComponent.gridComponents[i][j].isTrap2 = true;
-                    }else if(type == 1 ){         //1对应space
+                    } else if (type == 1) {         //1对应space
                         chessboardComponent.gridComponents[i][j].isTrap2 = false;
                         chessboardComponent.gridComponents[i][j].isTrap1 = true;
                     }
                 }
+
+                else if (chessboardComponent.getDensCell().contains(temp)) {
+                    if (type == 2) {//2对应jungle
+                        chessboardComponent.gridComponents[i][j].isDen1 = false;
+                        chessboardComponent.gridComponents[i][j].isDen2 = true;
+                    } else if (type == 1) {//1对应space
+                        chessboardComponent.gridComponents[i][j].isDen2 = false;
+                        chessboardComponent.gridComponents[i][j].isDen1 = true;
+                    }
+                }
+
+
+                else if (chessboardComponent.getRiverCell().contains(temp)) {
+                    if (type == 1) {//2对应jungle
+                        chessboardComponent.gridComponents[i][j].isRiver1 = false;
+                        chessboardComponent.gridComponents[i][j].isRiver2  = true;
+                    } else if (type == 2) {         //1对应space
+                        chessboardComponent.gridComponents[i][j].isRiver2 = false;
+                        chessboardComponent.gridComponents[i][j].isRiver1 = true;
+                    }
+                }
+                
+                else {
+                    if (type == 1) {//2对应jungle
+                        chessboardComponent.gridComponents[i][j].isGrass1 = false;
+                        chessboardComponent.gridComponents[i][j].isGrass2  = true;
+                    } else if (type == 2) {         //1对应space
+                        chessboardComponent.gridComponents[i][j].isGrass2 = false;
+                        chessboardComponent.gridComponents[i][j].isGrass1 = true;
+                    }
+                }
+                
             }
         }
 
 
     }
-//
-//}
 
-
+//    public void setTurnButtonText(String message) {
+//        this.TimeCounterButton.setText(message);
+//    }
 }
+
+
 
 
 

@@ -2,6 +2,8 @@ package controller.NetWork;
 
 import controller.GameController;
 import model.ChessboardPoint;
+import model.PlayerColor;
+import view.Dialog.VictoryDialog;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -74,9 +76,11 @@ public class Server {
                                 gameController.getModel().moveChessPiece(SrcAndDestPoints[0], SrcAndDestPoints[1]);
                                 gameController.view.setChessComponentAtGrid(SrcAndDestPoints[1], gameController.view.removeChessComponentAtGrid(SrcAndDestPoints[0]));
                                 gameController.view.repaint();
-
+                                if (SrcAndDestPoints[1].getName().equals("Den")) {
+                                    VictoryDialog a = new VictoryDialog();
+                                    VictoryDialog.displayWinning(PlayerColor.RED, a);
+                                }
                                 System.out.println("已经更新棋盘");
-
                             }
                         }
                     } catch (Exception e) {

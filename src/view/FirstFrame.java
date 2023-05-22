@@ -33,6 +33,7 @@ public class FirstFrame extends JFrame {
 
         ChessGameFrame gameFrame = new ChessGameFrame(1100, 810);
         this.gameFrame = gameFrame;
+        gameFrame.firstFrame = this;
 
         addGeneralModeButton();
         addAIModeButton();
@@ -76,6 +77,7 @@ public class FirstFrame extends JFrame {
             gameFrame.setVisible(true);
             gameFrame.getClock().setVisible(true);
             beginTimer();
+            JOptionPane.showMessageDialog(null, "You are Player Blue");
         });
         buttonEasy.setLocation(150, 150);
         buttonEasy.setSize(300, 120);
@@ -89,6 +91,7 @@ public class FirstFrame extends JFrame {
             gameFrame.ModeStatusButton.setText("AI-Medium Mode");
             gameFrame.setVisible(true);
             beginTimer();
+            JOptionPane.showMessageDialog(null, "You are Player Blue");
         });
         buttonMedium.setLocation(150, 300);
         buttonMedium.setSize(300, 120);
@@ -103,6 +106,8 @@ public class FirstFrame extends JFrame {
             gameFrame.setVisible(true);
             gameFrame.getClock().setVisible(true);
             beginTimer();
+            JOptionPane.showMessageDialog(null, "You are Player Blue");
+
 
         });
         buttonHard.setLocation(150, 450);
@@ -144,7 +149,7 @@ public class FirstFrame extends JFrame {
             this.gameFrame.gameController.beginNetwork(4,"noUseString");
             gameFrame.setVisible(true);
             gameFrame.getClock().setVisible(true);
-            JOptionPane.showMessageDialog(null, "You are PlayerBlue");
+            JOptionPane.showMessageDialog(null, "You are Player Blue");
             beginTimer();
         });
         buttonServer.setLocation(150, 150);

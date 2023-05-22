@@ -11,6 +11,7 @@ public class Main {
             GameController gameController = new GameController(mainFrame.getChessBoardFrame().getChessboardComponent(), new Chessboard());
             mainFrame.setVisible(true);
             mainFrame.getChessBoardFrame().setGameController(gameController);
+            gameController.setGameFrame(mainFrame.getChessBoardFrame());
             AI ai = new AI(gameController, gameController.getModel(), mainFrame.getChessBoardFrame().getChessboardComponent());
             gameController.setAi(ai);
         });

@@ -16,12 +16,14 @@ public class TimerCounter extends Thread{
                 PlayerColor player = gameController.currentPlayer;
                 while(timeOfThisTurn > 0){
                     timeOfThisTurn--;
+                    if(timeOfThisTurn==0){
+                        gameController.setCount(gameController.getCount()+1);
+                    }
                     try{
                         Thread.sleep(1000);
                         gameController.TimerCounterButton.setText("Time Remained:"+timeOfThisTurn);
                         if(timeOfThisTurn == 0){
                             gameController.swapColor();
-                            gameController.setCount(gameController.getCount()+1);
                         }
                     }catch (InterruptedException e){
                         e.printStackTrace();
