@@ -28,7 +28,6 @@ public class AI {
 
     public void JudgeValue(Chessboard model) {
         SharedData.possibleMoveMap.clear();//清空可能的移动
-        CopyModel();
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 7; j++) {
                 if (!model.isNull(SharedData.chessboardPointMap.get(i * 10 + j))) {
@@ -36,8 +35,7 @@ public class AI {
                         for (int k = 0; k < 9; k++) {
                             for (int p = 0; p < 7; p++) {
                                 if (model.isValidMove(SharedData.chessboardPointMap.get(i * 10 + j), SharedData.chessboardPointMap.get(k * 10 + p))) {
-                                    AnimalChessComponent chessComponent = (AnimalChessComponent) view.getGridComponentAt(SharedData.chessboardPointMap.get(i * 10 + j)).getComponents()[0];
-                                    Step step = new Step(SharedData.chessboardPointMap.get(i * 10 + j), SharedData.chessboardPointMap.get(k * 10 + p), model.getChessPieceAt(SharedData.chessboardPointMap.get(i * 10 + j)), model.getChessPieceAt(SharedData.chessboardPointMap.get(k * 10 + p)), 1, chessComponent);
+                                    Step step = new Step(SharedData.chessboardPointMap.get(i * 10 + j), SharedData.chessboardPointMap.get(k * 10 + p), model.getChessPieceAt(SharedData.chessboardPointMap.get(i * 10 + j)), model.getChessPieceAt(SharedData.chessboardPointMap.get(k * 10 + p)), 1, null);
                                     if (model.getChessPieceAt(SharedData.chessboardPointMap.get(k * 10 + p)) != null) {
                                         if (model.getChessPieceAt(SharedData.chessboardPointMap.get(k * 10 + p)).getOriginRank() == 7) {
                                             step.setValue(step.getValue() + 3);
@@ -96,6 +94,7 @@ public class AI {
     }
 
     public void AIPlay_1() {
+        CopyModel();
         this.currentPlayer = gameController.getCurrentPlayer();
         JudgeValue(thisModel);
         Step step = SharedData.possibleMoveMap.get(Collections.max(SharedData.possibleMoveMap.keySet()));
@@ -169,17 +168,25 @@ public class AI {
 
     public void AIPlay_2() {
         this.CopyModel();
-        JudgeRandomMoveValue(50000);
+        JudgeRandomMoveValue(1000);
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 7; j++) {
+                if (!thisModel.isNull(SharedData.chessboardPointMap.get(i * 10 + j))) {
+                    thisModel.getChessPieceAt(SharedData.chessboardPointMap.get(i * 10 + j)).setRank(thisModel.getChessPieceAt(SharedData.chessboardPointMap.get(i * 10 + j)).getOriginRank());
+                }
+            }
+        }
         Step step = SharedData.RandomMoveMapWithValue.get(Collections.max(SharedData.RandomMoveMapWithValue.keySet()));
         gameController.doStep(step);
     }
 
     private void JudgeRandomMoveValue(int CountStep) {
         SharedData.RandomMoveMapWithValue.clear();
-        int countMax = 1000;
+        int countMax = 100;
         for (int i = 0; i < CountStep; i++) {
             this.CopyModel();
             int count = 0;
+            int value = 0;
             this.currentPlayer = gameController.getCurrentPlayer();
             Step RandomStep0 = RandomStep(SupposeModel);
             SupposeMove(RandomStep0);
@@ -187,26 +194,61 @@ public class AI {
             while (true) {
                 if (gameController.JudgeWin(SupposeModel)) {
                     if (currentPlayer == gameController.getCurrentPlayer()) {
-                        count = count + 100;
+                        value = value + 100;
                     } else {
-                        count = count - 50;
+                        value = value - 100;
                     }
                     break;
                 }
-                Step SupposeStep = RandomStep(SupposeModel);
+
+                JudgeValue(SupposeModel);
+                Step SupposeStep = SharedData.possibleMoveMap.get(Collections.max(SharedData.possibleMoveMap.keySet()));
+                for (int k = 1; k < 3; k++) {
+                    if (SharedData.stepList.size() < k * 4) {
+                        break;
+                    }
+                    if (SupposeStep.getFrom() == SharedData.stepList.get(SharedData.stepList.size() - k * 4).getFrom()) {
+                        if (SupposeStep.getTo() == SharedData.stepList.get(SharedData.stepList.size() - k * 4).getTo()) {
+                            if (k == 2) {
+                                SharedData.possibleMoveMap.remove(Collections.max(SharedData.possibleMoveMap.keySet()));
+                                SupposeStep = SharedData.possibleMoveMap.get(Collections.max(SharedData.possibleMoveMap.keySet()));
+                            }
+                            continue;
+                        }
+                    }
+                }
                 if (SupposeStep == null) {
                     break;
                 }
                 SupposeMove(SupposeStep);
                 count++;
                 swapColor();
-                if (count > countMax + 50) {
+                if (count > countMax) {
                     break;
                 }
             }
-            SharedData.RandomMoveMapWithValue.put(1000 - count, RandomStep0);
-            countMax = 1000 - Collections.max(SharedData.RandomMoveMapWithValue.keySet()) + 1;
+            for (int k = 0; k < 9; k++) {
+                for (int j = 0; j < 7; j++) {
+                    if (SupposeModel.getChessPieceAt(SharedData.chessboardPointMap.get(k * 10 + j)) != null) {
+                        if (SupposeModel.getChessPieceAt(SharedData.chessboardPointMap.get(k * 10 + j)).getOwner() == gameController.getCurrentPlayer()) {
+                            value = value + 7 * SupposeModel.getChessPieceAt(SharedData.chessboardPointMap.get(k * 10 + j)).getOriginRank();
+                        } else {
+                            value = value - 10 * SupposeModel.getChessPieceAt(SharedData.chessboardPointMap.get(k * 10 + j)).getOriginRank();
+                        }
+                    }
+                }
+            }
+
+            if (100 - count + value < 0) {
+            } else {
+                SharedData.RandomMoveMapWithValue.put(100 - count + value, RandomStep0);
+                countMax = 100 - Collections.max(SharedData.RandomMoveMapWithValue.keySet()) + 1;
+            }
         }
+        CopyModel();
+        JudgeValue(thisModel);
+        Step step1 = SharedData.possibleMoveMap.get(Collections.max(SharedData.possibleMoveMap.keySet()));
+        SharedData.RandomMoveMapWithValue.put(Collections.max(SharedData.possibleMoveMap.keySet()), step1);
         List<Integer> list = new ArrayList<Integer>(SharedData.RandomMoveMapWithValue.keySet());
         Collections.sort(list, new Comparator<Integer>() {
             @Override
@@ -217,10 +259,8 @@ public class AI {
         List<Step> listStep1 = new ArrayList<Step>();
         List<Step> listStep2 = new ArrayList<Step>();
         for (int i = 0; i < list.size(); i++) {
-            if (list.get(i) > 900) {
-                listStep1.add(SharedData.RandomMoveMapWithValue.get(list.get(i)));
-                listStep2.add(SharedData.RandomMoveMapWithValue.get(list.get(i)));
-            }
+            listStep1.add(SharedData.RandomMoveMapWithValue.get(list.get(i)));
+            listStep2.add(SharedData.RandomMoveMapWithValue.get(list.get(i)));
         }
         for (Step step : listStep1) {
             int repeatNum = 0;

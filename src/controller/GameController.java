@@ -17,11 +17,11 @@ import javax.swing.*;
 import java.util.ArrayList;
 
 
-
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+
 /**
  * Controller is the connection between model and view,
  * when a Controller receive a request from a view, the Controller
@@ -69,7 +69,7 @@ public class GameController implements GameListener {
     }
 
     public PlayerColor currentPlayer = PlayerColor.BLUE;
-    private int aiStatus =3;//0_ai0, 1_ai1, 2_ai2, 3_human, 4_netWork_server, 5_netWork_server_client
+    private int aiStatus = 3;//0_ai0, 1_ai1, 2_ai2, 3_human, 4_netWork_server, 5_netWork_server_client
 
     private Server server;
     private Client client;
@@ -86,7 +86,7 @@ public class GameController implements GameListener {
         view.repaint();
     }
 
-    public void beginNetwork(int aiStatus,String host) {
+    public void beginNetwork(int aiStatus, String host) {
         if (aiStatus == 4) {
             this.server = new Server();
             server.startServer(8888);
@@ -97,6 +97,7 @@ public class GameController implements GameListener {
             client.receivingDataAndUpdate(this);
         }
     }
+
     private void initialize() {
         for (int i = 0; i < Constant.CHESSBOARD_ROW_SIZE.getNum(); i++) {
             for (int j = 0; j < Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
@@ -148,7 +149,7 @@ public class GameController implements GameListener {
                 }
                 num++;
                 arr[4] = num;
-                if (arr[0] > 6 || arr[0] < 0 || arr[1] > 8 || arr[1] < 0 || arr[2] > 6 || arr[2] < 0 || arr[3] > 8 || arr[3] < 0) {
+                if (arr[0] > 8 || arr[0] < 0 || arr[1] > 6 || arr[1] < 0 || arr[2] > 8 || arr[2] < 0 || arr[3] > 6 || arr[3] < 0) {
                     JOptionPane.showMessageDialog(null, "棋盘错误，错误编码:102", "Error", JOptionPane.ERROR_MESSAGE);
                     break;
                 }
@@ -348,6 +349,7 @@ public class GameController implements GameListener {
                 }
             }
         }
+        swapColor();
         return true;
     }
 
@@ -358,11 +360,11 @@ public class GameController implements GameListener {
                 swapColor();
                 break;
             case 1:
-                ai.AIPlay_1();
+                ai.AIPlay_2();
                 swapColor();
                 break;
             case 2:
-                ai.AIPlay_2();
+                ai.AIPlay_1();
                 swapColor();
                 break;
             case 3:    //啥也不做
@@ -394,10 +396,10 @@ public class GameController implements GameListener {
                 possibleMovePoints = null;
                 view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
                 selectedPoint = null;
-                if(this.aiStatus ==4 && currentPlayer == PlayerColor.BLUE){//这里是服务端是蓝色，对面是红色
+                if (this.aiStatus == 4 && currentPlayer == PlayerColor.BLUE) {//这里是服务端是蓝色，对面是红色
                     server.sendData(sendingData);
                 }
-                if(this.aiStatus ==5 && currentPlayer == PlayerColor.RED){//这里是客户端是蓝色，对面是蓝色
+                if (this.aiStatus == 5 && currentPlayer == PlayerColor.RED) {//这里是客户端是蓝色，对面是蓝色
                     client.sendData(sendingData);
                 }
 
@@ -417,9 +419,13 @@ public class GameController implements GameListener {
                         && ((this.currentPlayer.equals(PlayerColor.BLUE) && point.getRow() < 3)
                         || (this.currentPlayer.equals(PlayerColor.RED) && point.getRow() > 6))) {
                     this.model.getChessPieceAt(point).setRank(0);
+                } else {
+                    this.model.getChessPieceAt(point).setRank(this.model.getChessPieceAt(point).getOriginRank());
                 }
+
             } // finish the game
         }
+        view.paintImmediately(0, 0, view.getWidth(), view.getHeight());
         if (this.currentPlayer.equals(PlayerColor.RED)) {
             AIPlayIntegrated(getAiStatus());
         }
@@ -462,14 +468,14 @@ public class GameController implements GameListener {
                 view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
                 ChessboardPoint[] sendingData = {selectedPoint, point};
                 selectedPoint = null;
-                if(this.aiStatus ==4&& currentPlayer == PlayerColor.BLUE){//这里是服务端是蓝色，对面是红色
+                if (this.aiStatus == 4 && currentPlayer == PlayerColor.BLUE) {//这里是服务端是蓝色，对面是红色
                     server.sendData(sendingData);
                 }
-                if(this.aiStatus ==5 && currentPlayer == PlayerColor.RED){//这里是客户端是蓝色，对面是蓝色
+                if (this.aiStatus == 5 && currentPlayer == PlayerColor.RED) {//这里是客户端是蓝色，对面是蓝色
                     client.sendData(sendingData);
                 }
                 swapColor();
-                if(JudgeWin(model)){
+                if (JudgeWin(model)) {
                     winner = currentPlayer;
                     VictoryDialog a = new VictoryDialog();
                     VictoryDialog.displayWinning(winner, a);
@@ -488,6 +494,7 @@ public class GameController implements GameListener {
 
             JOptionPane.showMessageDialog(null, "行棋步骤错误，错误编码:105", "Error", JOptionPane.ERROR_MESSAGE);
         }
+        view.paintImmediately(0, 0, view.getWidth(), view.getHeight());
         if (this.currentPlayer.equals(PlayerColor.RED)) {
             AIPlayIntegrated(getAiStatus());
         }
