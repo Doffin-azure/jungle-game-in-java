@@ -66,10 +66,10 @@ public class Client {
                                 gameController.getModel().moveChessPiece(SrcAndDestPoints[0], SrcAndDestPoints[1]);
                                 gameController.view.setChessComponentAtGrid(SrcAndDestPoints[1], gameController.view.removeChessComponentAtGrid(SrcAndDestPoints[0]));
                                 gameController.view.repaint();
-
-                                VictoryDialog a = new VictoryDialog();
-                                VictoryDialog.displayWinning(PlayerColor.BLUE, a);
-
+                                if (SrcAndDestPoints[1].getName().equals("Den")) {
+                                    VictoryDialog a = new VictoryDialog();
+                                    VictoryDialog.displayWinning(PlayerColor.BLUE, a);
+                                }
                                 System.out.println("已经更新棋盘");
                             }
                         }

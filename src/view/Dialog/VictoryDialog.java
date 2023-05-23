@@ -18,8 +18,7 @@ public class VictoryDialog extends JFrame {
 //        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }
 
-    public static void displayWinning(PlayerColor winnerColor,VictoryDialog victoryDialog) {
-        SwingUtilities.invokeLater(() -> {
+    public static void displayWinning(PlayerColor winnerColor,VictoryDialog victoryDialog) {SwingUtilities.invokeLater(() -> {
             if(winnerColor == PlayerColor.RED)
                 JOptionPane.showMessageDialog(victoryDialog, "GAME\nOVER", "The Player RED have win the game!!! ", JOptionPane.INFORMATION_MESSAGE, icon);
             else

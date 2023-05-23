@@ -400,14 +400,7 @@ public class GameController implements GameListener {
                 if(this.aiStatus ==5 && currentPlayer == PlayerColor.RED){//这里是客户端是蓝色，对面是蓝色
                     client.sendData(sendingData);
                 }
-                swapColor();
-                view.repaint();
-                // TODO: if the chess enter Dens or Traps and so on
-                if (point.getName().equals("Trap")
-                        && ((this.currentPlayer.equals(PlayerColor.BLUE) && point.getRow() < 3)
-                        || (this.currentPlayer.equals(PlayerColor.RED) && point.getRow() > 6))) {
-                    this.model.getChessPieceAt(point).setRank(0);
-                }
+
                 if (point.getName().equals("Den")) {
                     winner = currentPlayer;
                     VictoryDialog a = new VictoryDialog();
@@ -416,6 +409,15 @@ public class GameController implements GameListener {
                     this.gameFrame.setVisible(false);
                     this.gameFrame.firstFrame.setVisible(true);
                 }// finish the game if the chess enter the Den
+
+                swapColor();
+                view.repaint();
+                // TODO: if the chess enter Dens or Traps and so on
+                if (point.getName().equals("Trap")
+                        && ((this.currentPlayer.equals(PlayerColor.BLUE) && point.getRow() < 3)
+                        || (this.currentPlayer.equals(PlayerColor.RED) && point.getRow() > 6))) {
+                    this.model.getChessPieceAt(point).setRank(0);
+                }
             } // finish the game
         }
         if (this.currentPlayer.equals(PlayerColor.RED)) {
@@ -467,6 +469,14 @@ public class GameController implements GameListener {
                     client.sendData(sendingData);
                 }
                 swapColor();
+                if(JudgeWin(model)){
+                    winner = currentPlayer;
+                    VictoryDialog a = new VictoryDialog();
+                    VictoryDialog.displayWinning(winner, a);
+                    this.restart();
+                    this.gameFrame.setVisible(false);
+                    this.gameFrame.firstFrame.setVisible(true);
+                }
                 view.repaint();
 
                 if (point.getName().equals("Trap") && ((this.currentPlayer.equals(PlayerColor.BLUE) && point.getRow() < 3)
