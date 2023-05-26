@@ -1,0 +1,15 @@
+Step{fromWhere=(2,2) on the chessboard is clicked!, toWhere=(2,3) on the chessboard is clicked!, MovedChessPiece=ChessPiece{owner=BLUE, name='Leopard', rank=5}, CapturedChessPiece=null, turn=1}
+Step{fromWhere=(6,2) on the chessboard is clicked!, toWhere=(6,3) on the chessboard is clicked!, MovedChessPiece=ChessPiece{owner=RED, name='Wolf', rank=4}, CapturedChessPiece=null, turn=2}
+Step{fromWhere=(2,3) on the chessboard is clicked!, toWhere=(3,3) on the chessboard is clicked!, MovedChessPiece=ChessPiece{owner=BLUE, name='Leopard', rank=5}, CapturedChessPiece=null, turn=3}
+Step{fromWhere=(6,3) on the chessboard is clicked!, toWhere=(5,3) on the chessboard is clicked!, MovedChessPiece=ChessPiece{owner=RED, name='Wolf', rank=4}, CapturedChessPiece=null, turn=4}
+Step{fromWhere=(3,3) on the chessboard is clicked!, toWhere=(4,3) on the chessboard is clicked!, MovedChessPiece=ChessPiece{owner=BLUE, name='Leopard', rank=5}, CapturedChessPiece=null, turn=5}
+Step{fromWhere=(6,6) on the chessboard is clicked!, toWhere=(5,6) on the chessboard is clicked!, MovedChessPiece=ChessPiece{owner=RED, name='Rat', rank=1}, CapturedChessPiece=null, turn=6}
+Step{fromWhere=(2,6) on the chessboard is clicked!, toWhere=(3,6) on the chessboard is clicked!, MovedChessPiece=ChessPiece{owner=BLUE, name='Elephant', rank=8}, CapturedChessPiece=null, turn=7}
+Step{fromWhere=(6,0) on the chessboard is clicked!, toWhere=(5,0) on the chessboard is clicked!, MovedChessPiece=ChessPiece{owner=RED, name='Elephant', rank=8}, CapturedChessPiece=null, turn=8}
+Step{fromWhere=(4,3) on the chessboard is clicked!, toWhere=(3,3) on the chessboard is clicked!, MovedChessPiece=ChessPiece{owner=BLUE, name='Leopard', rank=5}, CapturedChessPiece=null, turn=9}
+Step{fromWhere=(5,6) on the chessboard is clicked!, toWhere=(5,5) on the chessboard is clicked!, MovedChessPiece=ChessPiece{owner=RED, name='Rat', rank=1}, CapturedChessPiece=null, turn=10}
+Step{fromWhere=(3,6) on the chessboard is clicked!, toWhere=(4,6) on the chessboard is clicked!, MovedChessPiece=ChessPiece{owner=BLUE, name='Elephant', rank=8}, CapturedChessPiece=null, turn=11}
+Step{fromWhere=(5,3) on the chessboard is clicked!, toWhere=(4,3) on the chessboard is clicked!, MovedChessPiece=ChessPiece{owner=RED, name='Wolf', rank=4}, CapturedChessPiece=null, turn=12}
+Step{fromWhere=(1,5) on the chessboard is clicked!, toWhere=(1,6) on the chessboard is clicked!, MovedChessPiece=ChessPiece{owner=BLUE, name='Cat', rank=2}, CapturedChessPiece=null, turn=13}
+Step{fromWhere=(5,5) on the chessboard is clicked!, toWhere=(4,5) on the chessboard is clicked!, MovedChessPiece=ChessPiece{owner=RED, name='Rat', rank=1}, CapturedChessPiece=null, turn=14}
+Step{fromWhere=(3,3) on the chessboard is clicked!, toWhere=(4,3) on the chessboard is clicked!, MovedChessPiece=ChessPiece{owner=BLUE, name='Leopard', rank=5}, CapturedChessPiece=ChessPiece{owner=RED, name='Wolf', rank=4}, turn=15}
