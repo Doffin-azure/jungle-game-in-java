@@ -104,7 +104,7 @@ public class Clock extends JComponent {
 
         BufferedImage backgroundImage = null;
         try {
-            backgroundImage = ImageIO.read(new File("E:\\STUDY\\CS\\Lecture Java\\program\\resource\\BackgroundPicture\\Sustech.jfif"));
+            backgroundImage = ImageIO.read(new File("resource/BackgroundPicture/Sustech.jfif"));
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -125,8 +125,8 @@ public class GameController implements GameListener {
             System.out.println("错误编码: 101");
             return false;
         }
-        String PathName = "resource\\save\\" + name;
-        try (BufferedReader br = new BufferedReader(new FileReader(PathName))) {
+        File saveFile = new File("resource/save", name);
+        try (BufferedReader br = new BufferedReader(new FileReader(saveFile))) {
             String line;
             int num = 0;
             while ((line = br.readLine()) != null) {
@@ -188,10 +188,11 @@ public class GameController implements GameListener {
         return true;
     }
 
-    public void Save(String Path) {
-        String PathName = "resource\\save\\" + Path;
-        File file = new File(PathName);
+    public void Save(String name) {
+        File directory = new File("resource/save");
+        File file = new File(directory, name);
         try {
+            java.nio.file.Files.createDirectories(directory.toPath());
             FileWriter fw = new FileWriter(file);
             BufferedWriter bw = new BufferedWriter(fw);
             for (Step step : SharedData.stepList) {
