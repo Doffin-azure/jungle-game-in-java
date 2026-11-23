@@ -1,0 +1,7 @@
+/build/
+/out/
+/save/
+/save.txt
+/resource/save/
+.idea/
+*.iml
