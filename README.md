@@ -1,6 +1,6 @@
 # Jungle Chess in Java
 
-A desktop implementation of Jungle Chess (斗兽棋) built for SUSTech CS109. It uses Java Swing for the board and menus. The project includes game logic, an AI player, and networking code.
+A desktop implementation of Jungle Chess (斗兽棋) built for SUSTech's [CS109 Introduction to Computer Programming](https://cse.sustech.edu.cn/faculty/~zhangfw/25sp-cs109/index.html). It uses Java Swing for the board and menus. The project includes game logic, an AI player, and networking code.
 
 ## Run
 
