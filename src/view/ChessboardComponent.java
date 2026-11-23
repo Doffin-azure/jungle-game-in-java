@@ -69,7 +69,7 @@ public class ChessboardComponent extends JComponent {
                 if (grid[i][j].getPiece() != null) {
                     ChessPiece chessPiece = grid[i][j].getPiece();
                     System.out.println(chessPiece.getOwner());
-                    gridComponents[i][j].add(new AnimalChessComponent(chessPiece.getOwner(), CHESS_SIZE, grid[i][j].getPiece().getName(), grid[i][j].getPiece().getAddress()));//Where animals find its initial place
+                    gridComponents[i][j].add(new AnimalChessComponent(chessPiece.getOwner(), CHESS_SIZE, chessPiece.getName()));
                 }
             }
         }

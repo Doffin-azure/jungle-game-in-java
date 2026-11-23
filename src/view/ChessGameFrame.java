@@ -23,9 +23,7 @@ public class ChessGameFrame extends JFrame {
     private final int WIDTH;
     private final int HEIGHT;
     private ClockFrame clock;
-    private Thread t;
     public GameController gameController;
-    private BGM bgm;
     public FirstFrame firstFrame;
     JLabel background;
     JButton TurnStatusButton;
@@ -35,7 +33,6 @@ public class ChessGameFrame extends JFrame {
     public JButton turnButton;
     private String[] backgroundPath = {"resource/BackgroundPicture/Jungle.jfif",
             "resource/BackgroundPicture/space.jpg"};//背景图片路径
-    private String[] bgmPath = {"Music/CLDY.wav"};//bgm路径
     private final int ONE_CHESS_SIZE;
 
     private ChessboardComponent chessboardComponent;
@@ -69,10 +66,6 @@ public class ChessGameFrame extends JFrame {
         addModeStatusButton();
         addRulesButton();
 
-
-        bgm = new BGM(bgmPath[0]);
-        t = new Thread(bgm);
-        t.start();
 
         addBackground();
 
@@ -199,8 +192,7 @@ public class ChessGameFrame extends JFrame {
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
         button.addActionListener(e -> {
-            String[] options = {"BGM", "Theme", "Clock"};
-            String[] bgmOptions = {"Begin", "Close"};
+            String[] options = {"Theme", "Clock"};
             String[] themeBackgroundOptions = {"jungle", "space"};
             String[] ClockOptions = {"Clock-Visible", "Clock-invisible"};
 
@@ -209,26 +201,6 @@ public class ChessGameFrame extends JFrame {
             optionList.addActionListener(evt -> {
                 JComboBox<String> selectedList;
                 switch ((String) optionList.getSelectedItem()) {
-                    case "BGM":
-                        selectedList = new JComboBox<>(bgmOptions);
-                        selectedList.addActionListener(Bgmmmmme -> {
-                            switch ((String) selectedList.getSelectedItem()) {
-                                case "Begin":
-                                    bgm.startBGM();
-                                    break;
-                                case "Close":
-                                    bgm.stopBGM();
-                                    break;
-                                default:
-                            }
-                        });
-                        panel.removeAll();
-                        panel.add(selectedList);
-                        panel.revalidate();
-                        panel.repaint();
-
-
-                        break;
                     case "Theme":
                         selectedList = new JComboBox<>(themeBackgroundOptions);
                         selectedList.addActionListener(Backgrounde -> {

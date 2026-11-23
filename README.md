@@ -11,4 +11,11 @@ javac -encoding UTF-8 -sourcepath src -d build src/Main.java
 java -cp build Main
 ```
 
-Keep the working directory at the repository root so the game can find its board and audio assets in [resource](resource).
+Keep the working directory at the repository root so the game can load backgrounds and audio from [resource](resource). Pieces display their animal names and player colors.
+
+## Check board startup and the first move
+
+```bash
+javac -encoding UTF-8 -sourcepath src -d build src/Main.java test/JungleSmoke.java
+java -Djava.awt.headless=true -cp build JungleSmoke
+```

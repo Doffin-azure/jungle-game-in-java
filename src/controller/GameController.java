@@ -376,6 +376,9 @@ public class GameController implements GameListener {
     // click an empty cell
     @Override
     public void onPlayerClickCell(ChessboardPoint point, CellColorView component) {
+        if (selectedPoint == null) {
+            return;
+        }
         possibleMovePoints = null;
         setCanStepFalse();
         if (selectedPoint != null && model.isValidMove(selectedPoint, point) || model.isNull(point)) {//如果刚刚选有棋子且（空cell可以移动）或者（point是空的）

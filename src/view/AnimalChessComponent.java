@@ -1,36 +1,34 @@
 package view;
 
-
 import model.PlayerColor;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.geom.RoundRectangle2D;
-import java.util.jar.Attributes.Name;
+import javax.swing.JComponent;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
-
-/**
- * This is the equivalent of the ChessPiece class,
- * but this class only cares how to draw Chess on ChessboardComponent
- */
 public class AnimalChessComponent extends JComponent {
-    private PlayerColor owner;
+    private final PlayerColor owner;
+    private final String name;
     private boolean selected;
-    private String name;
-    private String address;
-    private ImageIcon gifImage;
-    public AnimalChessComponent(PlayerColor owner, int size, String name,String address) {
+
+    public AnimalChessComponent(PlayerColor owner, int size, String name) {
         this.owner = owner;
-        this.selected = false;
         this.name = name;
-        this.address = address;
-        gifImage = new ImageIcon(getClass().getResource(address));
-        setSize(size/2, size/2);
-        setLocation(0,0);
-        setVisible(true);
+        setSize(size, size);
+        getAccessibleContext().setAccessibleName(owner + " " + name);
     }
 
-
+    @Override
+    public javax.accessibility.AccessibleContext getAccessibleContext() {
+        if (accessibleContext == null) {
+            accessibleContext = new AccessibleJComponent() {};
+        }
+        return accessibleContext;
+    }
 
     public boolean isSelected() {
         return selected;
@@ -40,42 +38,23 @@ public class AnimalChessComponent extends JComponent {
         this.selected = selected;
     }
 
-
     @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        Graphics2D g2 = (Graphics2D) g;
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-//这是以前版本，我认为比较丑
-//        // Draw the GIF image
-//        if (gifImage != null) {
-//            if(this.owner.getColor() == Color.BLUE) g.setColor(new Color(41, 6, 199, 255));
-//            else g.setColor(new Color(255, 0, 0, 255));
-//            g.fillOval(0,0 ,getWidth(), getWidth());
-//            g.drawImage(gifImage.getImage(),11,11,getWidth()-22,getHeight()-22, this);
-//
-//        }
-//
-//        super.paintComponent(g);
-//        Graphics2D g2 = (Graphics2D) g;
-//        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    protected void paintComponent(Graphics graphics) {
+        super.paintComponent(graphics);
+        Graphics2D piece = (Graphics2D) graphics.create();
+        piece.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        piece.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-        // Draw the rounded rectangle
-        if (gifImage != null) {
-            int arcSize = 50; // 控制圆角的大小
-            int x = 0;
-            int y = 0;
-            int width = getWidth();
-            int height = getHeight();
-            RoundRectangle2D roundRect = new RoundRectangle2D.Double(x, y, width, height, arcSize, arcSize);
-
-            if (owner.getColor() == Color.BLUE) {
-                g2.setColor(new Color(17, 84, 255, 255));
-            } else {
-                g2.setColor(new Color(248, 19, 19, 255));
-            }
-            g2.fill(roundRect);
-            g2.drawImage(gifImage.getImage(), x + 11, y + 11, width - 22, height - 22, this);
-        }
-}
+        int width = getWidth();
+        int height = getHeight();
+        int inset = Math.max(2, Math.min(width, height) / 12);
+        piece.setColor(owner.getColor());
+        piece.fillRoundRect(inset, inset, width - 2 * inset, height - 2 * inset, inset * 2, inset * 2);
+        piece.setColor(Color.WHITE);
+        piece.setFont(new Font(Font.SANS_SERIF, Font.BOLD, Math.max(1, Math.min(width, height) / 6)));
+        FontMetrics metrics = piece.getFontMetrics();
+        piece.drawString(name, (width - metrics.stringWidth(name)) / 2,
+                (height - metrics.getHeight()) / 2 + metrics.getAscent());
+        piece.dispose();
+    }
 }
